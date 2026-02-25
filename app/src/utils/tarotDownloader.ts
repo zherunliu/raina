@@ -9,7 +9,7 @@ dotenv.config();
 const API_URL = process.env.API_URL || "https://en.wikipedia.org/w/api.php";
 const PAGE_TITLE = process.env.PAGE_TITLE || "wiki_source";
 const PROXY_URL = process.env.PROXY_URL || "http://127.0.0.1:7890";
-const SAVE_DIR = "./tarot_images";
+const SAVE_DIR = "../assets/tarot_images";
 
 const agent = new HttpsProxyAgent({
   keepAlive: true,
@@ -96,7 +96,7 @@ async function downloadFile(url: string, filePath: string) {
     httpsAgent: agent,
   });
   response.data.pipe(writer);
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     writer.on("finish", resolve);
     writer.on("error", reject);
   });
