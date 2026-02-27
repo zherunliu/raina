@@ -27,7 +27,7 @@ function handleToolConfirm(cards: DrawnCard[]) {
 </script>
 
 <template>
-  <div class="h-screen flex flex-col bg-base-100" data-theme="winter">
+  <div class="min-w-80 h-screen flex flex-col bg-base-100">
     <!-- 顶部栏 -->
     <TopBar
       :sidebar-open="sidebarOpen"

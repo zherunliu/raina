@@ -8,10 +8,7 @@ function goToChat() {
 </script>
 
 <template>
-  <div
-    class="min-w-60 flex flex-col items-center justify-center bg-base-100 py-15"
-    data-theme="winter"
-  >
+  <div class="flex flex-col items-center justify-center bg-base-100 py-15">
     <p class="text-4xl font-bold mb-2">404</p>
     <h1 class="font-bold text-xl">PAGE NOT FOUND</h1>
     <br />

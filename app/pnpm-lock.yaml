@@ -11,6 +11,9 @@ importers:
       '@types/fs-extra':
         specifier: ^11.0.4
         version: 11.0.4
+      '@vueuse/core':
+        specifier: ^14.2.1
+        version: 14.2.1(vue@3.5.29(typescript@5.9.3))
       axios:
         specifier: ^1.13.5
         version: 1.13.5
@@ -48,9 +51,6 @@ importers:
       daisyui:
         specifier: ^5.5.19
         version: 5.5.19
-      sass:
-        specifier: ^1.97.3
-        version: 1.97.3
       tailwindcss:
         specifier: ^4.2.1
         version: 4.2.1
@@ -590,6 +590,9 @@ packages:
   '@types/node@24.10.13':
     resolution: {integrity: sha512-oH72nZRfDv9lADUBSo104Aq7gPHpQZc4BTx38r9xf9pg5LfP6EzSyH2n7qFmmxRQXh7YlUXODcYsg6PuTDSxGg==}
 
+  '@types/web-bluetooth@0.0.21':
+    resolution: {integrity: sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==}
+
   '@vitejs/plugin-vue@6.0.4':
     resolution: {integrity: sha512-uM5iXipgYIn13UUQCZNdWkYk+sysBeA97d5mHsAoAt1u/wpN3+zxOmsVJWosuzX+IMGRzeYUNytztrYznboIkQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -660,6 +663,19 @@ packages:
         optional: true
       vue:
         optional: true
+
+  '@vueuse/core@14.2.1':
+    resolution: {integrity: sha512-3vwDzV+GDUNpdegRY6kzpLm4Igptq+GA0QkJ3W61Iv27YWwW/ufSlOfgQIpN6FZRMG0mkaz4gglJRtq5SeJyIQ==}
+    peerDependencies:
+      vue: ^3.5.0
+
+  '@vueuse/metadata@14.2.1':
+    resolution: {integrity: sha512-1ButlVtj5Sb/HDtIy1HFr1VqCP4G6Ypqt5MAo0lCgjokrk2mvQKsK2uuy0vqu/Ks+sHfuHo0B9Y9jn9xKdjZsw==}
+
+  '@vueuse/shared@14.2.1':
+    resolution: {integrity: sha512-shTJncjV9JTI4oVNyF1FQonetYAiTBd+Qj7cY89SWbXSkx7gyhrgtEdF2ZAVWS1S3SHlaROO6F2IesJxQEkZBw==}
+    peerDependencies:
+      vue: ^3.5.0
 
   alien-signals@3.1.2:
     resolution: {integrity: sha512-d9dYqZTS90WLiU0I5c6DHj/HcKkF8ZyGN3G5x8wSbslulz70KOxaqCT0hQCo9KOyhVqzqGojvNdJXoTumZOtcw==}
@@ -1412,6 +1428,8 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
+  '@types/web-bluetooth@0.0.21': {}
+
   '@vitejs/plugin-vue@6.0.4(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.31.1)(sass@1.97.3))(vue@3.5.29(typescript@5.9.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-rc.2
@@ -1519,6 +1537,19 @@ snapshots:
       typescript: 5.9.3
       vue: 3.5.29(typescript@5.9.3)
 
+  '@vueuse/core@14.2.1(vue@3.5.29(typescript@5.9.3))':
+    dependencies:
+      '@types/web-bluetooth': 0.0.21
+      '@vueuse/metadata': 14.2.1
+      '@vueuse/shared': 14.2.1(vue@3.5.29(typescript@5.9.3))
+      vue: 3.5.29(typescript@5.9.3)
+
+  '@vueuse/metadata@14.2.1': {}
+
+  '@vueuse/shared@14.2.1(vue@3.5.29(typescript@5.9.3))':
+    dependencies:
+      vue: 3.5.29(typescript@5.9.3)
+
   alien-signals@3.1.2: {}
 
   asynckit@0.4.0: {}
@@ -1541,6 +1572,7 @@ snapshots:
   chokidar@4.0.3:
     dependencies:
       readdirp: 4.1.2
+    optional: true
 
   combined-stream@1.0.8:
     dependencies:
@@ -1680,7 +1712,8 @@ snapshots:
 
   hpagent@1.2.0: {}
 
-  immutable@5.1.4: {}
+  immutable@5.1.4:
+    optional: true
 
   is-extglob@2.1.1:
     optional: true
@@ -1793,7 +1826,8 @@ snapshots:
 
   proxy-from-env@1.1.0: {}
 
-  readdirp@4.1.2: {}
+  readdirp@4.1.2:
+    optional: true
 
   rfdc@1.4.1: {}
 
@@ -1835,6 +1869,7 @@ snapshots:
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.6
+    optional: true
 
   source-map-js@1.2.1: {}
 
