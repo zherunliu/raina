@@ -8,10 +8,16 @@ const router = createRouter({
       name: "chat",
       component: () => import("../views/ChatView.vue"),
     },
+    { path: "/chat", redirect: "/" },
     {
       path: "/explore",
       name: "explore",
       component: () => import("../views/ExploreView.vue"),
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: () => import("../views/NotFoundView.vue"),
     },
   ],
 });
