@@ -40,6 +40,7 @@ function goToChat() {
     <div class="flex items-center gap-2">
       <!-- 侧边栏切换按钮 -->
       <button
+        v-if="route.path === '/'"
         class="btn btn-ghost btn-sm btn-square"
         @click="emit('toggle-sidebar')"
       >
