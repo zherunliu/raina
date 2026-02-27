@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { useChatStore } from "../stores/chat";
 import { computed } from "vue";
+import { useMediaQuery } from "@vueuse/core";
+
+/* 也可以使用 window.innerWidth 判断 */
+const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
 const chatStore = useChatStore();
 
@@ -13,12 +17,16 @@ const currentId = computed(() => chatStore.currentConversationId);
 
 function handleNewChat() {
   chatStore.createConversation();
-  emit("close");
+  if (!isLargeScreen.value) {
+    emit("close");
+  }
 }
 
 function selectConversation(id: string) {
   chatStore.setCurrentConversation(id);
-  emit("close");
+  if (!isLargeScreen.value) {
+    emit("close");
+  }
 }
 
 function deleteConversation(e: Event, id: string) {

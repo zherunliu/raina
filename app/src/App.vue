@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import TopBar from "./components/TopBar.vue";
 import SideBar from "./components/SideBar.vue";
 import FortuneModal from "./components/FortuneModal.vue";
@@ -9,6 +9,25 @@ import type { DrawnCard } from "./types";
 const sidebarOpen = ref(false);
 const showFortuneModal = ref(false);
 const showToolsModal = ref(false);
+
+/* 监听屏幕尺寸自动收起侧边栏 */
+const isLargeScreen = ref(false);
+const mediaQuery = window.matchMedia("(min-width: 1024px)");
+const updateScreenStatus = (e: MediaQueryListEvent | MediaQueryList) => {
+  isLargeScreen.value = e.matches;
+  if (!isLargeScreen.value && sidebarOpen.value) {
+    closeSidebar();
+  }
+};
+
+onMounted(() => {
+  updateScreenStatus(mediaQuery);
+  mediaQuery.addEventListener("change", updateScreenStatus);
+});
+
+onUnmounted(() => {
+  mediaQuery.removeEventListener("change", updateScreenStatus);
+});
 
 const selectedToolCards = ref<DrawnCard[]>([]);
 
