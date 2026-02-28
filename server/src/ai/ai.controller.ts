@@ -1,9 +1,9 @@
 import {
   Controller,
-  Get,
+  Post,
   HttpStatus,
   Logger,
-  Query,
+  Body,
   Res,
 } from '@nestjs/common';
 import { type Response } from 'express';
@@ -14,8 +14,8 @@ export class AiController {
   private readonly logger = new Logger(AiController.name);
   constructor(private readonly aiService: AiService) {}
 
-  @Get('chat')
-  async chat(@Query('message') message: string, @Res() res: Response) {
+  @Post('chat')
+  async chat(@Body('message') message: string, @Res() res: Response) {
     // Set SSE headers
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -36,8 +36,8 @@ export class AiController {
     }
   }
 
-  @Get('chat/sync')
-  async chatSync(@Query('message') message: string): Promise<string> {
+  @Post('chat/sync')
+  async chatSync(@Body('message') message: string): Promise<string> {
     return this.aiService.chat(message);
   }
 }
