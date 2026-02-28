@@ -26,12 +26,14 @@ export class AiController {
     try {
       const stream = this.aiService.chatStream(message);
       for await (const chunk of stream) {
-        res.write(`data: ${chunk}\n\n`);
+        const data = JSON.stringify({ content: chunk });
+        res.write(`data: ${data}\n\n`);
       }
+      res.write('data: [DONE]\n\n');
       res.end();
     } catch (err) {
       this.logger.error('Chat stream error:', err);
-      res.write('Chat stream error');
+      res.write('data: {"error": "Chat stream error"}\n\n');
       res.end();
     }
   }

@@ -20,15 +20,31 @@ export async function* chatStreamApi(message: string): AsyncGenerator<string> {
   }
 
   const reader = response.body.getReader();
-  const decoder = new TextDecoder();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
 
-    // 解码拿到的二进制分片
-    const chunk = decoder.decode(value, { stream: true });
-    yield chunk;
+      buffer += decoder.decode(value, { stream: true });
+
+      let eventBoundary;
+      while ((eventBoundary = buffer.indexOf("\n\n")) !== -1) {
+        const fullEvent = buffer.slice(0, eventBoundary);
+        buffer = buffer.slice(eventBoundary + 2);
+
+        if (fullEvent.startsWith("data:")) {
+          const rawData = fullEvent.replace(/^data:\s*/, "");
+          if (rawData === "[DONE]") return;
+          const parsed = JSON.parse(rawData);
+          yield parsed.content;
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
   }
 }
 
