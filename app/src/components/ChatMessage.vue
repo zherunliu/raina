@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { ChatMessage } from "../types";
+import { computed } from "vue";
+import { marked } from "marked";
 
 const props = defineProps<{
   message: ChatMessage;
@@ -11,6 +13,10 @@ function formatTime(timestamp: number): string {
     minute: "2-digit",
   });
 }
+
+const renderedContent = computed(() =>
+  marked.parse(props.message.content || ""),
+);
 </script>
 
 <template>
@@ -72,9 +78,10 @@ function formatTime(timestamp: number): string {
           >
         </div>
 
-        <p class="whitespace-pre-wrap wrap-break-words">
-          {{ message.content }}
-        </p>
+        <div
+          class="whitespace-pre-wrap wrap-break-words prose max-w-none"
+          v-html="renderedContent"
+        ></div>
       </div>
     </div>
   </div>
