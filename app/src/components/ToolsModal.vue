@@ -185,7 +185,6 @@ function getCardImage(card: DrawnCard): string {
           </div>
         </div>
 
-        <!-- 已翻开牌的详情 -->
         <div
           v-if="revealedIndices.size > 0"
           class="bg-base-200 rounded-lg p-4 mb-4 max-h-48 overflow-y-auto"

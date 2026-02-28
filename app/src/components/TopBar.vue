@@ -35,9 +35,9 @@ function goToChat() {
 
 <template>
   <header
-    class="h-14 bg-base-100 border-b border-base-300 flex items-center justify-between px-4"
+    class="h-14 bg-base-100 border-b border-base-300 grid grid-cols-3 px-4"
   >
-    <div class="flex items-center gap-2">
+    <div class="justify-self-start flex items-center gap-2">
       <!-- 侧边栏切换按钮 -->
       <button
         v-if="route.path === '/'"
@@ -65,7 +65,7 @@ function goToChat() {
     </div>
 
     <!-- 中间导航按钮 -->
-    <div class="flex items-center gap-2">
+    <div class="justify-self-center flex items-center gap-2">
       <button class="btn btn-ghost btn-sm gap-1" @click="emit('open-fortune')">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -129,8 +129,8 @@ function goToChat() {
       </button>
     </div>
 
-    <!-- 主题切换 -->
-    <div class="flex items-center gap-2">
+    <!-- 主题切换按钮 -->
+    <div class="justify-self-end flex items-center">
       <label class="swap swap-rotate">
         <input
           type="checkbox"
