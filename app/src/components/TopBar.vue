@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from "vue-router";
 import { useDark, useToggle } from "@vueuse/core";
+import { useUiStore } from "../stores/ui";
 
 const isDark = useDark({
   attribute: "data-theme",
@@ -13,6 +14,7 @@ const isDark = useDark({
 const toggleDark = useToggle(isDark);
 const router = useRouter();
 const route = useRoute();
+const uiStore = useUiStore();
 
 defineProps<{
   sidebarOpen: boolean;
@@ -20,8 +22,6 @@ defineProps<{
 
 const emit = defineEmits<{
   (e: "toggle-sidebar"): void;
-  (e: "open-fortune"): void;
-  (e: "open-tools"): void;
 }>();
 
 function goToExplore() {
@@ -66,7 +66,10 @@ function goToChat() {
 
     <!-- 中间导航按钮 -->
     <div class="justify-self-center flex items-center gap-2">
-      <button class="btn btn-ghost btn-sm gap-1" @click="emit('open-fortune')">
+      <button
+        class="btn btn-ghost btn-sm gap-1"
+        @click="uiStore.openFortuneModal()"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-4 w-4"
@@ -87,7 +90,7 @@ function goToChat() {
       <button
         v-if="route.path === '/'"
         class="btn btn-ghost btn-sm gap-1"
-        @click="emit('open-tools')"
+        @click="uiStore.openToolsModal()"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

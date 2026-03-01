@@ -4,11 +4,11 @@ import TopBar from "./components/TopBar.vue";
 import SideBar from "./components/SideBar.vue";
 import FortuneModal from "./components/FortuneModal.vue";
 import ToolsModal from "./components/ToolsModal.vue";
-import type { DrawnCard } from "./types";
+import { useUiStore } from "./stores/ui";
+
+const uiStore = useUiStore();
 
 const sidebarOpen = ref(false);
-const showFortuneModal = ref(false);
-const showToolsModal = ref(false);
 
 /* 监听屏幕尺寸自动收起侧边栏 */
 const isLargeScreen = ref(false);
@@ -29,8 +29,6 @@ onUnmounted(() => {
   mediaQuery.removeEventListener("change", updateScreenStatus);
 });
 
-const selectedToolCards = ref<DrawnCard[]>([]);
-
 function toggleSidebar() {
   sidebarOpen.value = !sidebarOpen.value;
 }
@@ -38,22 +36,12 @@ function toggleSidebar() {
 function closeSidebar() {
   sidebarOpen.value = false;
 }
-
-function handleToolConfirm(cards: DrawnCard[]) {
-  selectedToolCards.value = cards;
-  showToolsModal.value = false;
-}
 </script>
 
 <template>
   <div class="min-w-80 h-screen flex flex-col bg-base-100">
     <!-- 顶部栏 -->
-    <TopBar
-      :sidebar-open="sidebarOpen"
-      @toggle-sidebar="toggleSidebar"
-      @open-fortune="showFortuneModal = true"
-      @open-tools="showToolsModal = true"
-    />
+    <TopBar :sidebar-open="sidebarOpen" @toggle-sidebar="toggleSidebar" />
 
     <div class="flex-1 flex overflow-hidden relative">
       <!-- 侧边栏遮罩 -->
@@ -74,24 +62,19 @@ function handleToolConfirm(cards: DrawnCard[]) {
 
       <!-- 主内容 -->
       <main class="flex-1 overflow-hidden">
-        <router-view v-slot="{ Component }">
-          <component
-            :is="Component"
-            :selected-tool-cards="selectedToolCards"
-            @open-fortune="showFortuneModal = true"
-            @open-tools="showToolsModal = true"
-            @clear-tool-cards="selectedToolCards = []"
-          />
-        </router-view>
+        <router-view />
       </main>
     </div>
 
-    <FortuneModal v-if="showFortuneModal" @close="showFortuneModal = false" />
+    <FortuneModal
+      v-if="uiStore.showFortuneModal"
+      @close="uiStore.closeFortuneModal"
+    />
 
     <ToolsModal
-      v-if="showToolsModal"
-      @close="showToolsModal = false"
-      @confirm="handleToolConfirm"
+      v-if="uiStore.showToolsModal"
+      @close="uiStore.closeToolsModal"
+      @confirm="uiStore.confirmToolCards"
     />
   </div>
 </template>
