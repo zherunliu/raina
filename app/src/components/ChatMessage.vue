@@ -7,6 +7,11 @@ const props = defineProps<{
   message: ChatMessage;
 }>();
 
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+});
+
 function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString("zh-CN", {
     hour: "2-digit",
@@ -42,6 +47,7 @@ const renderedContent = computed(() =>
 
       <!-- 消息内容 -->
       <div
+        v-if="message.content"
         class="rounded-2xl px-4 py-2"
         :class="
           message.role === 'user'
@@ -79,9 +85,16 @@ const renderedContent = computed(() =>
         </div>
 
         <div
-          class="whitespace-pre-wrap wrap-break-words prose max-w-none"
+          v-if="message.role === 'assistant'"
+          class="wrap-break-words leading-loose max-w-none [&>p]:my-3"
           v-html="renderedContent"
         ></div>
+        <div
+          v-else
+          class="whitespace-pre-wrap wrap-break-words leading-loose max-w-none"
+        >
+          {{ message.content }}
+        </div>
       </div>
     </div>
   </div>

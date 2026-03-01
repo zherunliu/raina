@@ -2,9 +2,9 @@
 import { ref, nextTick, watch } from "vue";
 import { useChatStore } from "../stores/chat";
 import { useUiStore } from "../stores/ui";
-import type { DrawnCard } from "../types";
 import ChatMessage from "../components/ChatMessage.vue";
 import { chatStreamApi } from "../api";
+import { storeToRefs } from "pinia";
 
 const chatStore = useChatStore();
 const uiStore = useUiStore();
@@ -13,7 +13,7 @@ const inputMessage = ref("");
 const messageContainer = ref<HTMLElement | null>(null);
 const inputRef = ref<HTMLTextAreaElement | null>(null);
 
-const selectedCards = ref<DrawnCard[]>([]);
+const selectedCards = storeToRefs(uiStore).selectedToolCards;
 
 function scrollToBottom() {
   nextTick(() => {
@@ -26,7 +26,7 @@ function scrollToBottom() {
 watch(() => chatStore.currentMessages.length, scrollToBottom);
 
 async function sendMessage() {
-  const content = inputMessage.value.trim();
+  const content = inputMessage.value;
   if (!content || chatStore.isLoading) return;
 
   inputMessage.value = "";
@@ -37,6 +37,15 @@ async function sendMessage() {
     selectedCards.value.length > 0 ? [...selectedCards.value] : undefined,
   );
 
+  let fullContent = content;
+  if (selectedCards.value.length > 0) {
+    const cardsInfo = selectedCards.value
+      .map((card) => `${card.card.name}${card.isReversed ? " (逆位)" : ""}`)
+      .join(", ");
+    fullContent += `\n附加信息：已抽取的卡牌 - ${cardsInfo}`;
+  }
+
+  console.log("发送消息内容:", fullContent);
   selectedCards.value = [];
   uiStore.clearToolCards();
 
@@ -45,7 +54,7 @@ async function sendMessage() {
 
   try {
     let currentText = "";
-    for await (const chunk of chatStreamApi(content)) {
+    for await (const chunk of chatStreamApi(fullContent)) {
       currentText += chunk;
       chatStore.updateLastAssistantMessage(currentText);
     }
