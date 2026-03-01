@@ -183,32 +183,32 @@ function adjustTextareaHeight() {
       </div>
     </div>
 
-    <!-- 已加入的卡牌 -->
-    <div
-      v-if="uiStore.toolMode"
-      class="px-4 py-2 bg-base-200/50 border-t border-base-300"
-    >
-      <div class="max-w-3xl mx-auto flex items-center gap-2 flex-wrap">
-        <span class="text-sm text-base-content/60">已选择:</span>
-        <div
-          v-for="(drawnCard, index) in uiStore.selectedToolCards"
-          :key="index"
-          class="badge badge-primary gap-1"
-        >
-          {{ drawnCard.card.name }}
-          <span v-if="drawnCard.isReversed" class="text-xs">(逆位)</span>
-        </div>
-        <button class="btn btn-ghost btn-xs" @click="uiStore.clearToolCards()">
-          清除
-        </button>
-      </div>
-    </div>
-
     <!-- 输入区域 -->
     <div class="p-4 bg-base-100">
       <div class="max-w-3xl mx-auto">
         <div class="flex items-end gap-2">
           <div class="flex-1 relative">
+            <!-- 已加入的卡牌 -->
+            <div
+              v-if="uiStore.toolMode"
+              class="p-2 mb-2 rounded-lg inline-flex items-center gap-2 flex-wrap bg-base-200/50"
+            >
+              <span class="text-sm text-base-content/60">已选择:</span>
+              <div
+                v-for="(drawnCard, index) in uiStore.selectedToolCards"
+                :key="index"
+                class="badge badge-primary gap-1"
+              >
+                {{ drawnCard.card.name }}
+                <span v-if="drawnCard.isReversed" class="text-xs">(逆位)</span>
+              </div>
+              <button
+                class="btn btn-ghost btn-xs"
+                @click="uiStore.clearToolCards()"
+              >
+                清除
+              </button>
+            </div>
             <textarea
               ref="inputRef"
               v-model="inputMessage"
