@@ -1,29 +1,22 @@
 <script setup lang="ts">
-import { ref, nextTick, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { useChatStore } from "../stores/chat";
 import { useUiStore } from "../stores/ui";
-import ChatMessage from "../components/ChatMessage.vue";
-import { chatStreamApi } from "../api";
 import { storeToRefs } from "pinia";
+import { Blocks, Search, SendHorizontal, Sparkles } from "lucide-vue-next";
+import { uploadFileApi } from "../api";
+import VirtualMessageList from "../components/VirtualMessageList.vue";
+import { useI18n } from "vue-i18n";
 
 const chatStore = useChatStore();
 const uiStore = useUiStore();
+const { t, locale } = useI18n();
 
 const inputMessage = ref("");
-const messageContainer = ref<HTMLElement | null>(null);
 const inputRef = ref<HTMLTextAreaElement | null>(null);
+const fileInputRef = ref<HTMLInputElement | null>(null);
 
 const selectedCards = storeToRefs(uiStore).selectedToolCards;
-
-function scrollToBottom() {
-  nextTick(() => {
-    if (messageContainer.value) {
-      messageContainer.value.scrollTop = messageContainer.value.scrollHeight;
-    }
-  });
-}
-
-watch(() => chatStore.currentMessages.length, scrollToBottom);
 
 async function sendMessage() {
   const content = inputMessage.value;
@@ -31,198 +24,203 @@ async function sendMessage() {
 
   inputMessage.value = "";
 
-  chatStore.addMessage(
-    content,
-    "user",
-    selectedCards.value.length > 0 ? [...selectedCards.value] : undefined,
-  );
-
-  let fullContent = content;
+  const cardInfo =
+    selectedCards.value.length > 0 ? [...selectedCards.value] : undefined;
+  let sendContent = content;
   if (selectedCards.value.length > 0) {
     const cardsInfo = selectedCards.value
-      .map((card) => `${card.card.name}${card.isReversed ? " (逆位)" : ""}`)
+      .map((card) => {
+        const name = locale.value.startsWith("en")
+          ? card.card.nameEn
+          : card.card.name;
+        return `${name}${card.isReversed ? t("tarot.reversed") : ""}`;
+      })
       .join(", ");
-    fullContent += `\n附加信息：已抽取的卡牌 - ${cardsInfo}`;
+    sendContent += t("chat.attached_cards_note", { cards: cardsInfo });
   }
 
-  console.log("发送消息内容:", fullContent);
   selectedCards.value = [];
   uiStore.clearToolCards();
 
-  chatStore.isLoading = true;
-  chatStore.addMessage("", "assistant");
-
   try {
-    let currentText = "";
-    for await (const chunk of chatStreamApi(fullContent)) {
-      currentText += chunk;
-      chatStore.updateLastAssistantMessage(currentText);
+    await chatStore.sendMessage(content, sendContent, cardInfo);
+  } catch {
+    // store 层已做兜底，这里保留空 catch 避免控制台噪音
+  }
+}
+
+function triggerUpload() {
+  fileInputRef.value?.click();
+}
+
+async function onUploadChange(e: Event) {
+  const input = e.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+  try {
+    const res = await uploadFileApi(file);
+    if (res.code !== 1000) {
+      console.error(res.message ?? t("common.upload_failed"));
     }
-  } catch (error) {
-    chatStore.updateLastAssistantMessage("抱歉，发生了错误，请稍后重试。");
   } finally {
-    chatStore.isLoading = false;
+    input.value = "";
   }
 }
 
 function handleKeydown(e: KeyboardEvent) {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
-    sendMessage();
+    void sendMessage();
   }
 }
 
 function adjustTextareaHeight() {
   if (inputRef.value) {
     inputRef.value.style.height = "auto";
-    inputRef.value.style.height =
-      Math.min(inputRef.value.scrollHeight, 150) + "px";
+    inputRef.value.style.height = `${Math.min(inputRef.value.scrollHeight, 150)}px`;
   }
 }
+
+onMounted(async () => {
+  await chatStore.ensureInitialized();
+  if (chatStore.currentConversationId) {
+    await chatStore.setCurrentConversation(chatStore.currentConversationId);
+  }
+});
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
+  <div class="flex h-full flex-col">
     <!-- 消息列表区域 -->
-    <div ref="messageContainer" class="flex-1 overflow-y-auto p-4">
-      <!-- 空状态欢迎页面 -->
+    <div class="flex-1">
       <div
         v-if="chatStore.currentMessages.length === 0"
-        class="h-full flex flex-col items-center justify-center text-center px-4"
+        class="flex h-full flex-col items-center justify-center overflow-y-auto p-4 px-4 text-center"
       >
         <div class="mb-8">
-          <h2 class="text-2xl font-bold mb-2">你好，今天感觉怎么样？</h2>
+          <h2 class="mb-2 text-2xl font-bold">{{ t("chat.empty_title") }}</h2>
           <p class="text-base-content/60 max-w-md">
-            探索塔罗的神秘世界，获取今日运势，或与AI讨论您的问题
+            {{ t("chat.empty_desc") }}
           </p>
         </div>
 
-        <!-- 快捷操作 -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl w-full">
+        <div class="grid w-full max-w-2xl grid-cols-1 gap-4 sm:grid-cols-3">
           <button
-            class="card bg-base-200 hover:bg-base-300 transition-colors cursor-pointer"
+            class="card bg-base-200 hover:bg-base-300 cursor-pointer transition-colors"
             @click="uiStore.openFortuneModal()"
           >
             <div class="card-body items-center py-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-8 w-8 text-warning mb-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                />
-              </svg>
-              <span class="font-medium">今日运势</span>
-              <span class="text-xs text-base-content/60">抽取每日塔罗牌</span>
+              <Sparkles class="text-warning mb-2 h-8 w-8" />
+              <span class="font-medium">{{ t("chat.today_fortune") }}</span>
+              <span class="text-base-content/60 text-xs">{{
+                t("tarot.daily_title")
+              }}</span>
             </div>
           </button>
 
           <button
-            class="card bg-base-200 hover:bg-base-300 transition-colors cursor-pointer"
+            class="card bg-base-200 hover:bg-base-300 cursor-pointer transition-colors"
             @click="uiStore.openToolsModal()"
           >
             <div class="card-body items-center py-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-8 w-8 text-secondary mb-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                />
-              </svg>
-              <span class="font-medium">选择牌阵</span>
-              <span class="text-xs text-base-content/60">抽卡后与 AI 讨论</span>
+              <Blocks class="text-secondary mb-2 h-8 w-8" />
+              <span class="font-medium">{{ t("chat.choose_spread") }}</span>
+              <span class="text-base-content/60 text-xs">{{
+                t("nav.spreads")
+              }}</span>
             </div>
           </button>
 
           <router-link
             to="/explore"
-            class="card bg-base-200 hover:bg-base-300 transition-colors cursor-pointer"
+            class="card bg-base-200 hover:bg-base-300 cursor-pointer transition-colors"
           >
             <div class="card-body items-center py-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-8 w-8 text-accent mb-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              <span class="font-medium">探索牌义</span>
-              <span class="text-xs text-base-content/60">查看塔罗图鉴</span>
+              <Search class="text-accent mb-2 h-8 w-8" />
+              <span class="font-medium">{{ t("chat.explore_cards") }}</span>
+              <span class="text-base-content/60 text-xs">{{
+                t("explore.title")
+              }}</span>
             </div>
           </router-link>
         </div>
       </div>
 
-      <!-- 消息列表 -->
-      <div v-else class="max-w-3xl mx-auto space-y-4">
-        <ChatMessage
-          v-for="message in chatStore.currentMessages"
-          :key="message.id"
-          :message="message"
-        />
-
-        <!-- 加载指示器 -->
-        <div
-          v-if="chatStore.isLoading"
-          class="flex items-center gap-2 text-base-content/60"
-        >
-          <span class="loading loading-dots loading-sm"></span>
-          <span class="text-sm">thinking...</span>
-        </div>
-      </div>
+      <VirtualMessageList
+        v-else
+        :messages="chatStore.currentMessages"
+        :loading="chatStore.isLoading"
+      />
     </div>
 
     <!-- 输入区域 -->
-    <div class="p-4 bg-base-100">
-      <div class="max-w-3xl mx-auto">
+    <div class="bg-base-100 p-4">
+      <div class="mx-auto max-w-3xl">
+        <div class="mb-2 flex flex-wrap items-center gap-2">
+          <select
+            v-model="chatStore.selectedModel"
+            class="select select-bordered select-sm"
+          >
+            <option value="ollama">{{ t("chat.ollama") }}</option>
+            <option value="ollama-rag">{{ t("chat.ollama_rag") }}</option>
+          </select>
+
+          <label class="text-base-content/70 flex items-center gap-2 text-sm">
+            <input
+              v-model="chatStore.streamingEnabled"
+              type="checkbox"
+              class="checkbox checkbox-sm"
+            />
+            {{ t("chat.streaming") }}
+          </label>
+
+          <button class="btn btn-ghost btn-sm" @click="triggerUpload">
+            {{ t("chat.upload_doc") }}
+          </button>
+          <input
+            ref="fileInputRef"
+            type="file"
+            accept=".md,.txt"
+            class="hidden"
+            @change="onUploadChange"
+          />
+        </div>
         <div class="flex items-end gap-2">
-          <div class="flex-1 relative">
+          <div class="relative flex-1">
             <!-- 已加入的卡牌 -->
             <div
               v-if="uiStore.toolMode"
-              class="p-2 mb-2 rounded-lg inline-flex items-center gap-2 flex-wrap bg-base-200/50"
+              class="bg-base-200/50 mb-2 inline-flex flex-wrap items-center gap-2 rounded-lg p-2"
             >
-              <span class="text-sm text-base-content/60">已选择:</span>
+              <span class="text-base-content/60 text-sm">{{
+                t("chat.selected")
+              }}</span>
               <div
                 v-for="(drawnCard, index) in uiStore.selectedToolCards"
                 :key="index"
                 class="badge badge-primary gap-1"
               >
-                {{ drawnCard.card.name }}
-                <span v-if="drawnCard.isReversed" class="text-xs">(逆位)</span>
+                {{
+                  locale.startsWith("en")
+                    ? drawnCard.card.nameEn
+                    : drawnCard.card.name
+                }}
+                <span v-if="drawnCard.isReversed" class="text-xs">{{
+                  t("tarot.reversed")
+                }}</span>
               </div>
               <button
                 class="btn btn-ghost btn-xs"
                 @click="uiStore.clearToolCards()"
               >
-                清除
+                {{ t("chat.clear_selected") }}
               </button>
             </div>
             <textarea
               ref="inputRef"
               v-model="inputMessage"
-              class="textarea textarea-bordered w-full resize-none min-h-44px max-h-150px pr-12"
-              placeholder="输入您的问题..."
+              class="textarea textarea-bordered min-h-44px max-h-150px w-full resize-none pr-12"
+              :placeholder="t('chat.input_placeholder')"
               rows="1"
               @keydown="handleKeydown"
               @input="adjustTextareaHeight"
@@ -233,24 +231,11 @@ function adjustTextareaHeight() {
             :disabled="!inputMessage.trim() || chatStore.isLoading"
             @click="sendMessage"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-              />
-            </svg>
+            <SendHorizontal class="h-5 w-5" />
           </button>
         </div>
-        <p class="text-xs text-base-content/40 mt-2 text-center">
-          按 Enter 发送，Shift + Enter 换行
+        <p class="text-base-content/40 mt-2 text-center text-xs">
+          {{ t("chat.send_hint") }}
         </p>
       </div>
     </div>

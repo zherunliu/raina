@@ -1,20 +1,17 @@
 import axios from "axios";
 import fs from "fs-extra";
 import path from "path";
-import { HttpsProxyAgent } from "hpagent";
 import dotenv from "dotenv";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 dotenv.config();
 
 const API_URL = process.env.API_URL || "https://en.wikipedia.org/w/api.php";
 const PAGE_TITLE = process.env.PAGE_TITLE || "wiki_source";
-const PROXY_URL = process.env.PROXY_URL || "http://127.0.0.1:7890";
+const PROXY_URL = process.env.PROXY_URL || "";
 const SAVE_DIR = "../assets/tarot_images";
 
-const agent = new HttpsProxyAgent({
-  keepAlive: true,
-  proxy: PROXY_URL,
-});
+const agent = PROXY_URL ? new HttpsProxyAgent(PROXY_URL) : undefined;
 
 // https://en.wikipedia.org/robots.txt
 const headers = {
@@ -36,7 +33,7 @@ async function getTarotImages() {
     });
 
     const pages = response.data.query.pages;
-    const pageId = Object.keys(pages)[0]!;
+    const pageId = Object.keys(pages)[0];
     const images = pages[pageId].images;
 
     if (!images) {
@@ -65,7 +62,7 @@ async function getTarotImages() {
       });
 
       const imgPages = infoResponse.data.query.pages;
-      const imgId = Object.keys(imgPages)[0]!;
+      const imgId = Object.keys(imgPages)[0];
       const info = imgPages[imgId].imageinfo[0];
 
       if (info) {
@@ -86,7 +83,7 @@ async function getTarotImages() {
   }
 }
 
-async function downloadFile(url: string, filePath: string) {
+async function downloadFile(url, filePath) {
   const writer = fs.createWriteStream(filePath);
   const response = await axios({
     url,
@@ -96,7 +93,7 @@ async function downloadFile(url: string, filePath: string) {
     httpsAgent: agent,
   });
   response.data.pipe(writer);
-  return new Promise<void>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     writer.on("finish", resolve);
     writer.on("error", reject);
   });

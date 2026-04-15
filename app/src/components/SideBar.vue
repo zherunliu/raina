@@ -2,15 +2,16 @@
 import { useChatStore } from "../stores/chat";
 import { computed } from "vue";
 import { useMediaQuery } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
+import { MessageSquare, Plus, Trash2 } from "lucide-vue-next";
 
 /* 也可以使用 window.innerWidth 判断 */
 const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
 const chatStore = useChatStore();
+const { t } = useI18n();
 
-const emit = defineEmits<{
-  (e: "close"): void;
-}>();
+const emit = defineEmits<(e: "close") => void>();
 
 const conversations = computed(() => chatStore.conversations);
 const currentId = computed(() => chatStore.currentConversationId);
@@ -23,7 +24,7 @@ function handleNewChat() {
 }
 
 function selectConversation(id: string) {
-  chatStore.setCurrentConversation(id);
+  void chatStore.setCurrentConversation(id);
   if (!isLargeScreen.value) {
     emit("close");
   }
@@ -32,8 +33,8 @@ function selectConversation(id: string) {
 function deleteConversation(e: Event, id: string) {
   /* 防止事件冒泡 */
   e.stopPropagation();
-  if (confirm("确定要删除这个对话吗？")) {
-    chatStore.deleteConversation(id);
+  if (confirm(t("sidebar.delete_confirm"))) {
+    void chatStore.deleteConversation(id);
   }
 }
 
@@ -43,51 +44,40 @@ function formatDate(timestamp: number): string {
   const diff = now.getTime() - date.getTime();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-  if (days === 0) return "今天";
-  if (days === 1) return "昨天";
-  if (days < 7) return `${days}天前`;
-  return date.toLocaleDateString("zh-CN");
+  if (days === 0) return t("sidebar.today");
+  if (days === 1) return t("sidebar.yesterday");
+  if (days < 7) return t("sidebar.days_ago", { days });
+  return date.toLocaleDateString();
 }
 </script>
 
 <template>
-  <div class="flex flex-col h-full bg-base-200">
+  <div class="bg-base-200 flex h-full flex-col">
     <!-- 新建对话按钮 -->
     <div class="p-4">
       <button class="btn btn-primary w-full gap-2" @click="handleNewChat">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-        新建对话
+        <Plus class="h-5 w-5" />
+        {{ t("sidebar.new_chat") }}
       </button>
     </div>
 
     <!-- 对话历史列表 -->
     <div class="flex-1 overflow-y-auto px-2">
-      <div class="text-sm text-base-content/60 px-2 py-1">对话历史</div>
+      <div class="text-base-content/60 px-2 py-1 text-sm">
+        {{ t("sidebar.history") }}
+      </div>
 
       <div
         v-if="conversations.length === 0"
-        class="text-center text-base-content/40 py-8"
+        class="text-base-content/40 py-8 text-center"
       >
-        暂无对话记录
+        {{ t("sidebar.empty") }}
       </div>
 
       <div
         v-for="conv in conversations"
         :key="conv.id"
-        class="group relative flex items-center gap-2 px-3 py-2 mx-1 my-1 rounded-lg cursor-pointer transition-colors"
+        class="group relative mx-1 my-1 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 transition-colors"
         :class="
           currentId === conv.id
             ? 'bg-primary/10 text-primary'
@@ -95,47 +85,21 @@ function formatDate(timestamp: number): string {
         "
         @click="selectConversation(conv.id)"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 shrink-0"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-          />
-        </svg>
+        <MessageSquare class="h-4 w-4 shrink-0" />
 
-        <div class="flex-1 min-w-0">
+        <div class="min-w-0 flex-1">
           <div class="truncate text-sm">{{ conv.title }}</div>
-          <div class="text-xs text-base-content/40">
+          <div class="text-base-content/40 text-xs">
             {{ formatDate(conv.updatedAt) }}
           </div>
         </div>
 
         <!-- 删除按钮 -->
         <button
-          class="btn btn-ghost btn-xs opacity-0 group-hover:opacity-100 transition-opacity"
+          class="btn btn-ghost btn-xs opacity-0 transition-opacity group-hover:opacity-100"
           @click="(e) => deleteConversation(e, conv.id)"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
+          <Trash2 class="h-4 w-4" />
         </button>
       </div>
     </div>

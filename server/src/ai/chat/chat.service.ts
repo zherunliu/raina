@@ -1,7 +1,7 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { BaseChatModel } from '@langchain/core/language_models/chat_models';
-import { ConfigService } from '@nestjs/config';
-import { ChatOllama } from '@langchain/ollama';
+import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import { ConfigService } from "@nestjs/config";
+import { ChatOllama } from "@langchain/ollama";
 
 @Injectable()
 export class ChatService implements OnModuleInit {
@@ -12,12 +12,12 @@ export class ChatService implements OnModuleInit {
 
   onModuleInit() {
     const baseUrl = this.configService.get<string>(
-      'OLLAMA_BASE_URL',
-      'http://localhost:11434',
+      "OLLAMA_BASE_URL",
+      "http://localhost:11434",
     );
     const modelName = this.configService.get<string>(
-      'OLLAMA_MODEL',
-      'glm-5:cloud',
+      "OLLAMA_MODEL",
+      "glm-5:cloud",
     );
     this.chatModel = new ChatOllama({
       baseUrl: baseUrl,

@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "scripts": {
+    "dev:app": "pnpm --filter @raina/app dev",
+    "dev:server": "pnpm --filter @raina/server start:dev",
+    "dev": "concurrently -n app,server -c cyan,magenta \"pnpm dev:app\" \"pnpm dev:server\"",
+    "format:app": "pnpm --filter @raina/app format",
+    "format:server": "pnpm --filter @raina/server format",
+    "format": "concurrently -n app,server -c cyan,magenta \"pnpm format:app\" \"pnpm format:server\"",
+    "lint:app": "pnpm --filter @raina/app lint",
+    "lint:server": "pnpm --filter @raina/server lint",
+    "lint": "concurrently -n app,server -c cyan,magenta \"pnpm lint:app\" \"pnpm lint:server\"",
+    "build:app": "pnpm --filter @raina/app build",
+    "build:server": "pnpm --filter @raina/server build",
+    "build": "concurrently -n app,server -c cyan,magenta \"pnpm build:app\" \"pnpm build:server\"",
+    "docker": "echo \"drop database if exists raina; create database raina;\" | docker exec -i mysql mysql -uroot -ppass",
+    "ollama": "ollama pull qwen3"
+  }
+}

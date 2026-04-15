@@ -1,0 +1,126 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "upload_failed": "Upload failed",
+    "network_error": "Network request failed",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "clear": "Clear"
+  },
+  "auth": {
+    "login": "Sign in",
+    "logout": "Sign out",
+    "register": "Sign up",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm password",
+    "login_desc": "Sign in to use chat, daily tarot, spreads and explore",
+    "register_desc": "Create an account to unlock full features",
+    "username_placeholder": "Enter username/email",
+    "email_placeholder": "Enter email",
+    "password_placeholder": "Enter password",
+    "confirm_password_placeholder": "Confirm password",
+    "no_account": "No account?",
+    "has_account": "Already have an account?",
+    "go_register": "Sign up",
+    "go_login": "Sign in",
+    "signing_in": "Signing in...",
+    "signing_up": "Signing up...",
+    "login_success": "Signed in successfully",
+    "login_failed": "Sign in failed, please try again",
+    "register_success": "Signed up successfully",
+    "register_failed": "Sign up failed, please try again",
+    "password_mismatch": "Passwords do not match",
+    "logout_confirm_title": "Confirm sign out",
+    "logout_confirm_desc": "You need to sign in again to keep using chat, daily tarot and explore.",
+    "logout_success": "Signed out successfully"
+  },
+  "language": {
+    "zh": "中文",
+    "en": "English"
+  },
+  "nav": {
+    "daily": "Daily Tarot",
+    "spreads": "Spreads",
+    "explore": "Explore"
+  },
+  "chat": {
+    "empty_title": "Hi, how are you today?",
+    "empty_desc": "Explore tarot, get your daily fortune, or talk to AI about your questions",
+    "today_fortune": "Daily Tarot",
+    "choose_spread": "Choose spread",
+    "explore_cards": "Explore cards",
+    "input_placeholder": "Type your question...",
+    "send_hint": "Press Enter to send, Shift + Enter for new line",
+    "upload_doc": "Upload doc",
+    "streaming": "Streaming",
+    "model": "Model",
+    "ollama": "Ollama",
+    "ollama_rag": "Ollama + RAG",
+    "selected": "Selected:",
+    "clear_selected": "Clear",
+    "thinking": "Thinking...",
+    "you": "You",
+    "raina": "Raina",
+    "added_cards": "Added {count} tarot card info",
+    "attached_cards_note": "\nAdditional info: drawn cards - {cards}",
+    "error_try_later": "Sorry, something went wrong. Please try again later."
+  },
+  "sidebar": {
+    "new_chat": "New chat",
+    "delete_confirm": "Delete this chat?",
+    "history": "Chats",
+    "empty": "No chats yet",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "days_ago": "{days} days ago"
+  },
+  "explore": {
+    "title": "Tarot Encyclopedia",
+    "search_placeholder": "Search cards...",
+    "empty": "No matching cards",
+    "keywords_title": "Keywords",
+    "meaning_desc_title": "Card meaning",
+    "cat_all": "All",
+    "cat_major": "Major Arcana",
+    "cat_wands": "Wands",
+    "cat_cups": "Cups",
+    "cat_swords": "Swords",
+    "cat_pentacles": "Pentacles"
+  },
+  "tools": {
+    "title": "Choose spread - Draw tarot cards",
+    "desc": "Choose a spread. After drawing, you can add it to the chat and discuss with AI.",
+    "start_draw": "Start drawing",
+    "tap_to_reveal": "Tap cards to reveal, or",
+    "reveal_all": "Reveal all",
+    "reselect": "Reselect",
+    "spread_interpretation": "Spread interpretation",
+    "add_to_chat": "Add to chat",
+    "spreads": {
+      "single": "Single card",
+      "timeline": "Timeline spread",
+      "relationship": "Relationship spread",
+      "cross": "Cross spread"
+    }
+  },
+  "tarot": {
+    "daily_title": "Daily Tarot",
+    "flip_to_reveal": "Tap to reveal",
+    "generating": "Generating...",
+    "ai_interpretation": "AI Interpretation",
+    "keywords": "Keywords",
+    "upright_plain": "Upright",
+    "upright": " (Upright)",
+    "reversed_plain": "Reversed",
+    "reversed": " (Reversed)"
+  },
+  "not_found": {
+    "title": "Page Not Found",
+    "desc": "Sorry, the page you visited does not exist.",
+    "back": "Back to chat"
+  }
+}

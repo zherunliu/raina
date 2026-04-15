@@ -1,0 +1,126 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "upload_failed": "上传失败",
+    "network_error": "网络请求失败",
+    "confirm": "确认",
+    "cancel": "取消",
+    "close": "关闭",
+    "delete": "删除",
+    "clear": "清除"
+  },
+  "auth": {
+    "login": "登录",
+    "logout": "退出",
+    "register": "注册",
+    "username": "用户名",
+    "email": "邮箱",
+    "password": "密码",
+    "confirm_password": "确认密码",
+    "login_desc": "登录后使用聊天、今日运势、牌阵和图鉴",
+    "register_desc": "创建账号后即可使用完整能力",
+    "username_placeholder": "请输入用户名/邮箱",
+    "email_placeholder": "请输入邮箱",
+    "password_placeholder": "请输入密码",
+    "confirm_password_placeholder": "请再次输入密码",
+    "no_account": "还没有账号？",
+    "has_account": "已有账号？",
+    "go_register": "去注册",
+    "go_login": "去登录",
+    "signing_in": "登录中...",
+    "signing_up": "注册中...",
+    "login_success": "登录成功",
+    "login_failed": "登录失败，请重试",
+    "register_success": "注册成功",
+    "register_failed": "注册失败，请重试",
+    "password_mismatch": "两次输入的密码不一致",
+    "logout_confirm_title": "确认退出登录",
+    "logout_confirm_desc": "退出后需要重新登录才能继续使用聊天、运势和图鉴功能。",
+    "logout_success": "退出登录成功"
+  },
+  "language": {
+    "zh": "中文",
+    "en": "English"
+  },
+  "nav": {
+    "daily": "今日运势",
+    "spreads": "选择牌阵",
+    "explore": "探索牌义"
+  },
+  "chat": {
+    "empty_title": "你好，今天感觉怎么样？",
+    "empty_desc": "探索塔罗的神秘世界，获取今日运势，或与 AI 讨论您的问题",
+    "today_fortune": "今日运势",
+    "choose_spread": "选择牌阵",
+    "explore_cards": "探索牌义",
+    "input_placeholder": "输入您的问题...",
+    "send_hint": "按 Enter 发送，Shift + Enter 换行",
+    "upload_doc": "上传文档",
+    "streaming": "流式",
+    "model": "模型",
+    "ollama": "Ollama",
+    "ollama_rag": "Ollama + RAG",
+    "selected": "已选择:",
+    "clear_selected": "清除",
+    "thinking": "思考中...",
+    "you": "你",
+    "raina": "Raina",
+    "added_cards": "已添加 {count} 张塔罗牌信息",
+    "attached_cards_note": "\n附加信息：已抽取的卡牌 - {cards}",
+    "error_try_later": "抱歉，发生了错误，请稍后重试。"
+  },
+  "sidebar": {
+    "new_chat": "新建对话",
+    "delete_confirm": "确定要删除这个对话吗？",
+    "history": "对话历史",
+    "empty": "暂无对话记录",
+    "today": "今天",
+    "yesterday": "昨天",
+    "days_ago": "{days}天前"
+  },
+  "explore": {
+    "title": "塔罗图鉴",
+    "search_placeholder": "搜索牌名或关键词...",
+    "empty": "没有找到相关的塔罗牌",
+    "keywords_title": "关键词",
+    "meaning_desc_title": "牌义描述",
+    "cat_all": "全部",
+    "cat_major": "大阿尔卡纳",
+    "cat_wands": "权杖",
+    "cat_cups": "圣杯",
+    "cat_swords": "宝剑",
+    "cat_pentacles": "钱币"
+  },
+  "tools": {
+    "title": "选择牌阵 - 抽取塔罗牌",
+    "desc": "选择牌阵，抽取后可以将结果加入对话中与 AI 讨论",
+    "start_draw": "开始抽牌",
+    "tap_to_reveal": "点击卡牌翻开，或",
+    "reveal_all": "全部翻开",
+    "reselect": "重新选择",
+    "spread_interpretation": "牌阵解读",
+    "add_to_chat": "加入对话",
+    "spreads": {
+      "single": "单张解读",
+      "timeline": "时间流牌阵",
+      "relationship": "人际关系牌阵",
+      "cross": "十字牌阵"
+    }
+  },
+  "tarot": {
+    "daily_title": "今日运势",
+    "flip_to_reveal": "点击翻牌",
+    "generating": "生成中...",
+    "ai_interpretation": "AI 解读",
+    "keywords": "关键词",
+    "upright_plain": "正位",
+    "upright": "（正位）",
+    "reversed_plain": "逆位",
+    "reversed": "（逆位）"
+  },
+  "not_found": {
+    "title": "页面不存在",
+    "desc": "抱歉，您访问的页面不存在。",
+    "back": "返回聊天"
+  }
+}

@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import type { ChatMessage } from "../types";
 import { computed } from "vue";
+import { Blocks } from "lucide-vue-next";
 import { marked } from "marked";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   message: ChatMessage;
 }>();
+
+const { t, locale } = useI18n();
 
 marked.setOptions({
   breaks: true,
@@ -13,7 +17,8 @@ marked.setOptions({
 });
 
 function formatTime(timestamp: number): string {
-  return new Date(timestamp).toLocaleTimeString("zh-CN", {
+  const loc = locale.value.startsWith("zh") ? "zh-CN" : "en-US";
+  return new Date(timestamp).toLocaleTimeString(loc, {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -34,13 +39,13 @@ const renderedContent = computed(() =>
       :class="message.role === 'user' ? 'order-1' : 'order-2'"
     >
       <div
-        class="flex items-center gap-2 mb-1"
+        class="mb-1 flex items-center gap-2"
         :class="message.role === 'user' ? 'justify-end' : 'justify-start'"
       >
-        <span class="text-xs text-base-content/60">
-          {{ message.role === "user" ? "你" : "Raina" }}
+        <span class="text-base-content/60 text-xs">
+          {{ message.role === "user" ? t("chat.you") : t("chat.raina") }}
         </span>
-        <span class="text-xs text-base-content/40">{{
+        <span class="text-base-content/40 text-xs">{{
           formatTime(message.timestamp)
         }}</span>
       </div>
@@ -58,40 +63,27 @@ const renderedContent = computed(() =>
         <!-- 附加的塔罗牌信息 -->
         <div
           v-if="message.cardInfo && message.cardInfo.length > 0"
-          class="flex items-center gap-1 mb-2 pb-2 border-b"
+          class="mb-2 flex items-center gap-1 border-b pb-2"
           :class="
             message.role === 'user'
               ? 'border-primary-content/20'
               : 'border-base-300'
           "
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-            />
-          </svg>
-          <span class="text-xs opacity-70"
-            >已添加 {{ message.cardInfo.length }} 张塔罗牌信息</span
-          >
+          <Blocks class="h-4 w-4" />
+          <span class="text-xs opacity-70">{{
+            t("chat.added_cards", { count: message.cardInfo.length })
+          }}</span>
         </div>
 
         <div
           v-if="message.role === 'assistant'"
-          class="wrap-break-words leading-loose max-w-none [&>p]:my-3"
+          class="wrap-break-words max-w-none leading-loose [&>p]:my-3"
           v-html="renderedContent"
         ></div>
         <div
           v-else
-          class="whitespace-pre-wrap wrap-break-words leading-loose max-w-none"
+          class="wrap-break-words max-w-none leading-loose whitespace-pre-wrap"
         >
           {{ message.content }}
         </div>

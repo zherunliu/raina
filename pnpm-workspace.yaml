@@ -1,0 +1,10 @@
+packages:
+  - app
+  - server
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@parcel/watcher'
+  - esbuild
+  - msw
+  - unrs-resolver

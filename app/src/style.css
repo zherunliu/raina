@@ -98,3 +98,11 @@ body,
 .slide-leave-to {
   transform: translateX(-100%);
 }
+
+/* Override daisyUI input/textarea focus styles to use 1px orange border */
+.input:focus,
+.input:focus-within,
+.textarea:focus,
+.textarea:focus-within {
+  @apply border-orange-400 shadow-none outline-none;
+}

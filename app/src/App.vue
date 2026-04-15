@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useRoute } from "vue-router";
 import TopBar from "./components/TopBar.vue";
 import SideBar from "./components/SideBar.vue";
 import FortuneModal from "./components/FortuneModal.vue";
 import ToolsModal from "./components/ToolsModal.vue";
+import ToastContainer from "./components/ToastContainer.vue";
 import { useUiStore } from "./stores/ui";
 
 const uiStore = useUiStore();
+const route = useRoute();
 
 const sidebarOpen = ref(false);
+
+const isAuthPage = computed(
+  () => route.path === "/login" || route.path === "/register",
+);
 
 /* 监听屏幕尺寸自动收起侧边栏 */
 const isLargeScreen = ref(false);
@@ -39,23 +46,25 @@ function closeSidebar() {
 </script>
 
 <template>
-  <div class="min-w-80 h-screen flex flex-col bg-base-100">
+  <ToastContainer />
+  <router-view v-if="isAuthPage" />
+  <div v-else class="bg-base-100 flex h-screen min-w-80 flex-col">
     <!-- 顶部栏 -->
     <TopBar :sidebar-open="sidebarOpen" @toggle-sidebar="toggleSidebar" />
 
-    <div class="flex-1 flex overflow-hidden relative">
+    <div class="relative flex flex-1 overflow-hidden">
       <!-- 侧边栏遮罩 -->
       <Transition name="fade">
         <div
           v-if="sidebarOpen"
-          class="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          class="fixed inset-0 z-20 bg-black/50 lg:hidden"
           @click="closeSidebar"
         ></div>
       </Transition>
 
       <!-- 侧边栏 -->
       <Transition name="slide">
-        <aside v-if="sidebarOpen" class="fixed lg:relative z-30 w-72 h-full">
+        <aside v-if="sidebarOpen" class="fixed z-30 h-full w-72 lg:relative">
           <SideBar @close="closeSidebar" />
         </aside>
       </Transition>

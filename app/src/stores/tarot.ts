@@ -15,7 +15,7 @@ export const useTarotStore = defineStore("tarot", () => {
     ),
   );
 
-  function drawCards(count: number = 1): DrawnCard[] {
+  function drawCards(count = 1): DrawnCard[] {
     const shuffled = [...cards.value].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, count).map((card) => ({
       card,
