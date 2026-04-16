@@ -8,7 +8,8 @@ import { getMessageBySessionId } from "../dao/message";
 import {
   createSession,
   getSessionByUsername,
-  softDeleteSession,
+  hardDeleteSession,
+  // softDeleteSession,
   updateSessionTitle,
 } from "../dao/session";
 import type { History } from "../model/message";
@@ -67,7 +68,7 @@ async function deleteSession(
   sessionId: string,
 ): Promise<Code> {
   try {
-    const affected = await softDeleteSession(username, sessionId);
+    const affected = await hardDeleteSession(username, sessionId);
     // Also drop in-memory agent to release memory.
     getAiAgentManager().removeAiAgent(username, sessionId);
     return affected > 0 ? Code.OK : Code.RecordNotFound;

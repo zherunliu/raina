@@ -9,8 +9,11 @@ import VirtualMessageList from "../components/VirtualMessageList.vue";
 import { useI18n } from "vue-i18n";
 
 const chatStore = useChatStore();
+const { refreshSessions } = chatStore;
 const uiStore = useUiStore();
 const { t, locale } = useI18n();
+
+onMounted(refreshSessions);
 
 const inputMessage = ref("");
 const inputRef = ref<HTMLTextAreaElement | null>(null);

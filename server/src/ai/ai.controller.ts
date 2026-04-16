@@ -9,16 +9,14 @@ import {
 } from "@nestjs/common";
 import type { Request, Response } from "express";
 import { z } from "zod";
-import { ChatOllama } from "@langchain/ollama";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
 import { AuthGuard } from "../auth/auth.guard";
 import { Code } from "../code";
-import { getConfig, logger } from "../config";
 import { codeOf, success, type ResponseBody } from "../controller/response";
 import { detectLocale } from "../i18n";
 import sessionService from "../service/session";
 import { ModelType } from "./model";
+import { AiService } from "./ai.service";
 
 const questionModelSchema = z.object({
   question: z.string().min(1),
@@ -41,6 +39,8 @@ const renameSessionSchema = z.object({
 @Controller("ai")
 @UseGuards(AuthGuard)
 export class AiController {
+  constructor(private readonly aiService: AiService) {}
+
   @Post("tarot/daily")
   async tarotDaily(
     @Req() req: Request,
@@ -52,25 +52,10 @@ export class AiController {
       return codeOf(Code.ParamsInvalid, locale);
     }
 
-    const cfg = getConfig().ai;
-    const llm = new ChatOllama({ baseUrl: cfg.base_url, model: cfg.mode_name });
-    const systemPrompt =
-      "Your name is Raina. You are a tarot reader with a psychology background. Based on the card(s), generate a concise daily fortune. No markdown, no emoji.";
     try {
-      const res = await llm.invoke([
-        new SystemMessage(systemPrompt),
-        new HumanMessage(parsed.data.message),
-      ]);
-      const content =
-        typeof res.content === "string"
-          ? res.content
-          : JSON.stringify(res.content);
+      const content = await this.aiService.chat(parsed.data.message, locale);
       return success({ answer: content }, locale);
-    } catch (err: unknown) {
-      logger.error(
-        { err, baseUrl: cfg.base_url, model: cfg.mode_name },
-        "Tarot daily model invocation failed",
-      );
+    } catch {
       return codeOf(Code.ModelError, locale);
     }
   }

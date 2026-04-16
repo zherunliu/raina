@@ -5,6 +5,7 @@ import { codeOf } from "../controller/response";
 import { detectLocale } from "../i18n";
 import { parseToken } from "../utils/jwt";
 import { getUserByUsername } from "../dao/user";
+import { UserVo } from "../model/user";
 
 function getTokenFromQuery(value: unknown): string {
   if (typeof value === "string") {
@@ -20,16 +21,19 @@ function getTokenFromQuery(value: unknown): string {
 export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const http = context.switchToHttp();
-    const req = http.getRequest<Request>() as Request & {
-      user?: { username: string };
-    };
+    const req = http.getRequest<
+      Request & {
+        user?: Partial<UserVo>;
+      }
+    >();
     const res = http.getResponse<Response>();
 
     let token = "";
     const authHeader = req.header("Authorization") ?? "";
     if (authHeader.startsWith("Bearer ")) {
-      token = authHeader.slice(7);
+      token = authHeader.slice("Bearer ".length);
     } else {
+      // req.query: Record<string, unknown>
       token = getTokenFromQuery(req.query.token);
     }
 

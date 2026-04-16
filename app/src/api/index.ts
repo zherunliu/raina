@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { tGlobal } from "../i18n";
+import router from "../router";
 
 const BaseResponseSchema = z.looseObject({
   code: z.number(),
@@ -85,7 +86,7 @@ async function apiFetch<T>(
 
   if (res.status === 401) {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    router.replace("/login");
     throw new Error(tGlobal("common.unauthorized") || "Unauthorized");
   }
 

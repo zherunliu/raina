@@ -47,3 +47,13 @@ export async function softDeleteSession(
     .whereNull("deleted_at")
     .update({ deleted_at: getDb().fn.now(), updated_at: getDb().fn.now() });
 }
+
+export async function hardDeleteSession(
+  username: string,
+  sessionId: string,
+): Promise<number> {
+  return sessions()
+    .where({ id: sessionId, username })
+    .whereNull("deleted_at")
+    .delete();
+}

@@ -6,8 +6,8 @@ import { ChatOllama } from "@langchain/ollama";
 @Injectable()
 export class ChatService implements OnModuleInit {
   private readonly logger = new Logger(ChatService.name);
-  private chatModel: BaseChatModel;
-  private chatStreamModel: BaseChatModel;
+  private chatModel!: BaseChatModel;
+  private chatStreamModel!: BaseChatModel;
   constructor(private readonly configService: ConfigService) {}
 
   onModuleInit() {
