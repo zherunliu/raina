@@ -82,6 +82,13 @@ async function apiFetch<T>(
     headers,
   });
   const ct = res.headers.get("content-type") ?? "";
+
+  if (res.status === 401) {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+    throw new Error(tGlobal("common.unauthorized") || "Unauthorized");
+  }
+
   if (!res.ok) {
     if (ct.includes("application/json")) {
       const data: unknown = await res.json();

@@ -4,6 +4,7 @@ import { Code } from "../code";
 import { codeOf } from "../controller/response";
 import { detectLocale } from "../i18n";
 import { parseToken } from "../utils/jwt";
+import { getUserByUsername } from "../dao/user";
 
 function getTokenFromQuery(value: unknown): string {
   if (typeof value === "string") {
@@ -17,7 +18,7 @@ function getTokenFromQuery(value: unknown): string {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const http = context.switchToHttp();
     const req = http.getRequest<Request>() as Request & {
       user?: { username: string };
@@ -43,7 +44,13 @@ export class AuthGuard implements CanActivate {
       return false;
     }
 
-    req.user = { username };
+    const userInDb = await getUserByUsername(username);
+    if (!userInDb) {
+      res.status(401).json(codeOf(Code.TokenInvalid, detectLocale(req)));
+      return false;
+    }
+
+    req.user = { ...userInDb };
     return true;
   }
 }
