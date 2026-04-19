@@ -39,6 +39,7 @@ router.beforeEach((to) => {
   const isAuthed = Boolean(token);
 
   if (to.meta.requiresAuth && !isAuthed) {
+    // Redirect to login page with the original destination as a query parameter
     return { path: "/login", query: { redirect: to.fullPath } };
   }
 

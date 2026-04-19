@@ -31,6 +31,7 @@ async function onSubmit() {
     ) {
       toastStore.success(t("auth.login_success"));
       authStore.setToken(res.token);
+      // Redirect to the original page or home
       const redirect =
         typeof route.query.redirect === "string" ? route.query.redirect : "/";
       await router.replace(redirect);

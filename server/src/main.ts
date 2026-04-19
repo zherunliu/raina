@@ -10,10 +10,7 @@ async function bootstrap() {
     cors: true,
   });
 
-  // Align with raina: all APIs are under /api/v1/...
   app.setGlobalPrefix("api/v1");
-
-  // Align with raina: initialize infrastructure before serving traffic.
   await initMysql();
   await loadDataFromDb();
   await initCache();
