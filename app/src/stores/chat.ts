@@ -1,129 +1,82 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import type { ChatMessage, Conversation, DrawnCard } from "../types";
 import { tGlobal } from "../i18n";
+import { useQueryClient } from "@tanstack/vue-query";
 import {
   createSessionAndSendMessageStream,
   deleteSessionApi,
-  getChatHistoryApi,
-  getSessionsApi,
   sendMessageStream2Session,
   type ModelType,
 } from "../api";
+import { queryKeys } from "../query-client";
 
 type ConversationEx = Conversation & {
   serverSessionId: string | null;
 };
 
 export const useChatStore = defineStore("chat", () => {
-  const conversations = ref<ConversationEx[]>([]);
+  const queryClient = useQueryClient();
+  const localConversations = ref<ConversationEx[]>([]);
   const currentConversationId = ref<string | null>(null);
+
+  const localMessageCache = ref<Record<string, ChatMessage[]>>({});
+
   const isLoading = ref(false);
   const selectedModel = ref<ModelType>("ollama");
   const streamingEnabled = ref(true);
-  const initialized = ref(false);
-
-  const currentConversation = computed(() =>
-    conversations.value.find((c) => c.id === currentConversationId.value),
-  );
-
-  const currentMessages = computed(
-    () => currentConversation.value?.messages ?? [],
-  );
-
-  async function ensureInitialized() {
-    if (initialized.value) return;
-    await refreshSessions();
-    initialized.value = true;
-  }
-
-  async function refreshSessions() {
-    const res = await getSessionsApi();
-    if (res.code !== 1000) {
-      // If token is invalid, router guard will force login on next nav.
-      conversations.value = [];
-      currentConversationId.value = null;
-      return;
-    }
-    const list = (res.sessions ?? []).map((s) => ({
-      id: s.id,
-      title: s.title || s.id,
-      messages: [] as ChatMessage[],
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      serverSessionId: s.id,
-    }));
-    conversations.value = list;
-    const stillExists = currentConversationId.value
-      ? conversations.value.some((c) => c.id === currentConversationId.value)
-      : false;
-    if (!currentConversationId.value || !stillExists) {
-      if (conversations.value.length > 0) {
-        currentConversationId.value = conversations.value[0]?.id ?? null;
-      } else {
-        createConversation();
-      }
-    }
-  }
 
   function createConversation(title = tGlobal("sidebar.new_chat")): string {
     const id = `temp-${String(Date.now())}`;
-    const conversation: ConversationEx = {
+    localConversations.value.unshift({
       id,
       title,
       messages: [],
       createdAt: Date.now(),
       updatedAt: Date.now(),
       serverSessionId: null,
-    };
-    conversations.value.unshift(conversation);
+    });
     currentConversationId.value = id;
+    localMessageCache.value[id] = [];
     return id;
   }
 
-  async function deleteConversation(id: string) {
-    const index = conversations.value.findIndex((c) => c.id === id);
-    if (index > -1) {
-      const conv = conversations.value[index]!;
-      if (conv.serverSessionId) {
-        const res = await deleteSessionApi(conv.serverSessionId);
-        if (res.code !== 1000) {
-          return;
-        }
-      }
-      conversations.value.splice(index, 1);
-      if (currentConversationId.value === id) {
-        currentConversationId.value = conversations.value[0]?.id ?? null;
-      }
+  function getLocalMessages(sessionId: string) {
+    if (!localMessageCache.value[sessionId]) {
+      localMessageCache.value[sessionId] = [];
     }
+    return localMessageCache.value[sessionId];
   }
 
-  async function setCurrentConversation(id: string) {
-    currentConversationId.value = id;
-    const conv = conversations.value.find((c) => c.id === id);
-    if (!conv) return;
-    if (conv.serverSessionId && conv.messages.length === 0) {
-      const res = await getChatHistoryApi(conv.serverSessionId);
-      if (res.code === 1000 && Array.isArray(res.history)) {
-        conv.messages = res.history.map((h) => ({
-          id: `${String(Date.now())}-${Math.random().toString(36).slice(2)}`,
-          role: h.is_user ? "user" : "assistant",
-          content: h.content,
-          timestamp: Date.now(),
-        }));
+  async function deleteConversation(
+    id: string,
+    serverSessionId?: string | null,
+  ) {
+    const index = localConversations.value.findIndex((c) => c.id === id);
+    if (index > -1) {
+      localConversations.value.splice(index, 1);
+    }
+    if (localMessageCache.value[id]) {
+      delete localMessageCache.value[id];
+    }
+    if (serverSessionId && !serverSessionId.startsWith("temp-")) {
+      const res = await deleteSessionApi(serverSessionId);
+      if (res.code === 1000) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.sessions });
       }
+    }
+    if (currentConversationId.value === id) {
+      currentConversationId.value = null;
     }
   }
 
   function addMessage(
+    sessionId: string,
     content: string,
     role: "user" | "assistant" | "system",
     cardInfo?: DrawnCard[],
   ) {
-    if (!currentConversation.value) {
-      createConversation();
-    }
-    const conv = currentConversation.value!;
+    const messages = getLocalMessages(sessionId);
     const message: ChatMessage = {
       id: `${String(Date.now())}-${Math.random().toString(36).slice(2)}`,
       role,
@@ -131,13 +84,13 @@ export const useChatStore = defineStore("chat", () => {
       timestamp: Date.now(),
       cardInfo,
     };
+    messages.push(message);
 
-    conv.messages.push(message);
-    conv.updatedAt = Date.now();
-
+    const conv = localConversations.value.find((c) => c.id === sessionId);
     if (
+      conv &&
       role === "user" &&
-      conv.messages.filter((m) => m.role === "user").length === 1
+      messages.filter((m) => m.role === "user").length === 1
     ) {
       conv.title = content.slice(0, 20) + (content.length > 20 ? "..." : "");
     }
@@ -145,11 +98,10 @@ export const useChatStore = defineStore("chat", () => {
     return message;
   }
 
-  function updateLastAssistantMessage(content: string) {
-    const conv = currentConversation.value;
-    if (!conv) return;
-    for (let i = conv.messages.length - 1; i >= 0; i--) {
-      const msg = conv.messages[i];
+  function updateLastAssistantMessage(sessionId: string, content: string) {
+    const messages = getLocalMessages(sessionId);
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const msg = messages[i];
       if (msg?.role === "assistant") {
         msg.content = content;
         break;
@@ -158,77 +110,82 @@ export const useChatStore = defineStore("chat", () => {
   }
 
   async function sendMessage(
+    sessionId: string,
     displayContent: string,
     sendContent: string,
     cardInfo?: DrawnCard[],
   ) {
-    const conv = currentConversation.value ?? conversations.value[0] ?? null;
-    if (!conv || isLoading.value) return;
+    if (!sessionId || isLoading.value) return;
 
-    addMessage(displayContent, "user", cardInfo);
+    addMessage(sessionId, displayContent, "user", cardInfo);
     isLoading.value = true;
-    addMessage("", "assistant");
+    addMessage(sessionId, "", "assistant");
 
     try {
-      if (!streamingEnabled.value) {
-        // For now keep streaming as the primary path; non-stream can be added later.
-      }
+      const convConfig = localConversations.value.find(
+        (c) => c.id === sessionId,
+      );
+      const serverSessionId =
+        convConfig?.serverSessionId ||
+        (sessionId.startsWith("temp-") ? null : sessionId);
 
-      if (!conv.serverSessionId) {
-        for await (const ev of createSessionAndSendMessageStream(
+      if (!serverSessionId) {
+        const streamIt = createSessionAndSendMessageStream(
           sendContent,
           selectedModel.value,
-        )) {
+        );
+        for await (const ev of streamIt) {
           if (ev.kind === "session") {
-            const oldId = conv.id;
-            conv.serverSessionId = ev.session_id;
-            conv.id = ev.session_id;
-            // Remove any duplicated session entry from a previous refresh
-            conversations.value = conversations.value.filter(
-              (c) => c === conv || c.id !== ev.session_id,
-            );
-            if (currentConversationId.value === oldId) {
-              currentConversationId.value = ev.session_id;
+            const sid = ev.session_id;
+            if (convConfig) {
+              convConfig.serverSessionId = sid;
+              convConfig.id = sid;
             }
+            const existingMessages = localMessageCache.value[sessionId];
+            if (existingMessages) {
+              localMessageCache.value[sid] = existingMessages;
+              delete localMessageCache.value[sessionId];
+            }
+            if (currentConversationId.value === sessionId) {
+              currentConversationId.value = sid;
+            }
+            sessionId = sid;
+            queryClient.invalidateQueries({ queryKey: queryKeys.sessions });
           } else if (ev.kind === "chunk") {
-            updateLastAssistantMessage(ev.content);
+            updateLastAssistantMessage(sessionId, ev.content);
           }
         }
-        return;
-      }
-
-      for await (const ev of sendMessageStream2Session(
-        conv.serverSessionId,
-        sendContent,
-        selectedModel.value,
-      )) {
-        if (ev.kind === "chunk") {
-          updateLastAssistantMessage(ev.content);
+      } else {
+        const streamIt = sendMessageStream2Session(
+          serverSessionId,
+          sendContent,
+          selectedModel.value,
+        );
+        for await (const ev of streamIt) {
+          if (ev.kind === "chunk") {
+            updateLastAssistantMessage(sessionId, ev.content);
+          }
         }
       }
     } catch (err) {
-      updateLastAssistantMessage(tGlobal("chat.error_try_later"));
+      updateLastAssistantMessage(sessionId, tGlobal("chat.error_try_later"));
       throw err;
     } finally {
       isLoading.value = false;
+      queryClient.invalidateQueries({ queryKey: queryKeys.history(sessionId) });
     }
   }
 
   return {
-    conversations,
+    localConversations,
     currentConversationId,
-    currentConversation,
-    currentMessages,
     isLoading,
     selectedModel,
     streamingEnabled,
-    ensureInitialized,
-    refreshSessions,
+    localMessageCache,
     createConversation,
+    getLocalMessages,
     deleteConversation,
-    setCurrentConversation,
-    addMessage,
-    updateLastAssistantMessage,
     sendMessage,
   };
 });

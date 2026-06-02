@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useSessions, useChatHistory } from "../composables/useSessions";
 import { useChatStore } from "../stores/chat";
 import { useUiStore } from "../stores/ui";
 import { storeToRefs } from "pinia";
@@ -9,11 +10,8 @@ import VirtualMessageList from "../components/VirtualMessageList.vue";
 import { useI18n } from "vue-i18n";
 
 const chatStore = useChatStore();
-const { refreshSessions } = chatStore;
 const uiStore = useUiStore();
 const { t, locale } = useI18n();
-
-onMounted(refreshSessions);
 
 const inputMessage = ref("");
 const inputRef = ref<HTMLTextAreaElement | null>(null);
@@ -21,9 +19,39 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 
 const selectedCards = storeToRefs(uiStore).selectedToolCards;
 
+// 引入合并后的会话列表和历史记录请求
+const { allConversations } = useSessions(
+  computed(() => chatStore.localConversations),
+);
+
+const currentServerSessionId = computed(() => {
+  const curr = allConversations.value.find(
+    (c) => c.id === chatStore.currentConversationId,
+  );
+  return curr?.serverSessionId ?? null;
+});
+
+const { data: historyMessages, isLoading: isLoadingHistory } = useChatHistory(
+  currentServerSessionId,
+);
+
+// 组合历史消息 + 本地临时乐观消息
+const currentMessages = computed(() => {
+  const sessionId = chatStore.currentConversationId!;
+  const history = historyMessages.value ?? [];
+  const local = chatStore.getLocalMessages(sessionId);
+  return [...history, ...local];
+});
+
+const isChatLoading = computed(
+  () => chatStore.isLoading || isLoadingHistory.value,
+);
+
 async function sendMessage() {
   const content = inputMessage.value;
-  if (!content || chatStore.isLoading) return;
+  const sessionId = chatStore.currentConversationId;
+
+  if (!content || !sessionId || chatStore.isLoading) return;
 
   inputMessage.value = "";
 
@@ -46,9 +74,9 @@ async function sendMessage() {
   uiStore.clearToolCards();
 
   try {
-    await chatStore.sendMessage(content, sendContent, cardInfo);
+    await chatStore.sendMessage(sessionId, content, sendContent, cardInfo);
   } catch {
-    // store 层已做兜底，这里保留空 catch 避免控制台噪音
+    // 错误处理已在 store 中完成
   }
 }
 
@@ -84,10 +112,10 @@ function adjustTextareaHeight() {
   }
 }
 
-onMounted(async () => {
-  await chatStore.ensureInitialized();
-  if (chatStore.currentConversationId) {
-    await chatStore.setCurrentConversation(chatStore.currentConversationId);
+// 用户首次进来时，如果没有会话就创建一个
+onMounted(() => {
+  if (!chatStore.currentConversationId) {
+    chatStore.createConversation();
   }
 });
 </script>
@@ -97,7 +125,7 @@ onMounted(async () => {
     <!-- 消息列表区域 -->
     <div class="flex-1">
       <div
-        v-if="chatStore.currentMessages.length === 0"
+        v-if="currentMessages.length === 0"
         class="flex h-full flex-col items-center justify-center overflow-y-auto p-4 px-4 text-center"
       >
         <div class="mb-8">
@@ -151,8 +179,8 @@ onMounted(async () => {
 
       <VirtualMessageList
         v-else
-        :messages="chatStore.currentMessages"
-        :loading="chatStore.isLoading"
+        :messages="currentMessages"
+        :loading="isChatLoading"
       />
     </div>
 

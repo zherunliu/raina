@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useChatStore } from "../stores/chat";
+import { useSessions } from "../composables/useSessions";
 import { computed } from "vue";
 import { useMediaQuery } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { MessageSquare, Plus, Trash2 } from "lucide-vue-next";
 
-/* 也可以使用 window.innerWidth 判断 */
 const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
 const chatStore = useChatStore();
@@ -13,7 +13,10 @@ const { t } = useI18n();
 
 const emit = defineEmits<(e: "close") => void>();
 
-const conversations = computed(() => chatStore.conversations);
+const { allConversations, isLoadingSessions } = useSessions(
+  computed(() => chatStore.localConversations),
+);
+
 const currentId = computed(() => chatStore.currentConversationId);
 
 function handleNewChat() {
@@ -24,17 +27,21 @@ function handleNewChat() {
 }
 
 function selectConversation(id: string) {
-  void chatStore.setCurrentConversation(id);
+  chatStore.currentConversationId = id;
   if (!isLargeScreen.value) {
     emit("close");
   }
 }
 
-function deleteConversation(e: Event, id: string) {
+function deleteConversation(
+  e: Event,
+  id: string,
+  serverSessionId?: string | null,
+) {
   /* 防止事件冒泡 */
   e.stopPropagation();
   if (confirm(t("sidebar.delete_confirm"))) {
-    void chatStore.deleteConversation(id);
+    void chatStore.deleteConversation(id, serverSessionId);
   }
 }
 
@@ -67,15 +74,25 @@ function formatDate(timestamp: number): string {
         {{ t("sidebar.history") }}
       </div>
 
+      <!-- 加载状态 -->
       <div
-        v-if="conversations.length === 0"
+        v-if="isLoadingSessions"
+        class="text-base-content/40 py-8 text-center"
+      >
+        {{ t("common.loading") }}
+      </div>
+
+      <!-- 空状态 -->
+      <div
+        v-else-if="allConversations.length === 0"
         class="text-base-content/40 py-8 text-center"
       >
         {{ t("sidebar.empty") }}
       </div>
 
+      <!-- 会话列表 -->
       <div
-        v-for="conv in conversations"
+        v-for="conv in allConversations"
         :key="conv.id"
         class="group relative mx-1 my-1 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 transition-colors"
         :class="
@@ -97,7 +114,7 @@ function formatDate(timestamp: number): string {
         <!-- 删除按钮 -->
         <button
           class="btn btn-ghost btn-xs opacity-0 transition-opacity group-hover:opacity-100"
-          @click="(e) => deleteConversation(e, conv.id)"
+          @click="(e) => deleteConversation(e, conv.id, conv.serverSessionId)"
         >
           <Trash2 class="h-4 w-4" />
         </button>
