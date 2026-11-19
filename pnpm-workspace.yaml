@@ -1,10 +1,6 @@
-packages:
-  - app
-  - server
+allowBuilds:
+  esbuild: true
 
-onlyBuiltDependencies:
-  - '@nestjs/core'
-  - '@parcel/watcher'
-  - esbuild
-  - msw
-  - unrs-resolver
+autoInstallPeers: true
+
+minimumReleaseAge: 0

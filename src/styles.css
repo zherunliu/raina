@@ -1,0 +1,124 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+:root {
+  --background: #f8fafc;
+  --foreground: #202638;
+  --card: #ffffff;
+  --primary: #505c92;
+  --primary-foreground: #ffffff;
+  --secondary: #e9edf5;
+  --secondary-foreground: #283352;
+  --muted: #edf1f7;
+  --muted-foreground: #647087;
+  --border: #dce2ed;
+  --input: #dce2ed;
+  --ring: #697ab2;
+  --destructive: #c43f50;
+  --radius: 0.625rem;
+}
+.dark {
+  --background: #171c2a;
+  --foreground: #e6eaf3;
+  --card: #202738;
+  --primary: #a8b5ec;
+  --primary-foreground: #1a2440;
+  --secondary: #2b344b;
+  --secondary-foreground: #e6eaf3;
+  --muted: #252e41;
+  --muted-foreground: #a1acc1;
+  --border: #364159;
+  --input: #364159;
+  --ring: #91a3e2;
+  --destructive: #fb8796;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground m-0 antialiased;
+    font-family: "Avenir Next", "PingFang SC", sans-serif;
+  }
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    @apply focus-visible:ring-ring outline-none focus-visible:ring-2;
+  }
+  button:not(:disabled),
+  a {
+    cursor: pointer;
+  }
+}
+.prose {
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+.prose > * + * {
+  margin-top: 0.8em;
+}
+.prose pre {
+  overflow: auto;
+  padding: 1rem;
+  background: var(--muted);
+  border-radius: 0.5rem;
+}
+.prose code {
+  font-size: 0.875em;
+}
+.prose a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.prose ul {
+  list-style: disc;
+  padding-left: 1.5em;
+}
+.prose ol {
+  list-style: decimal;
+  padding-left: 1.5em;
+}
+.prose table {
+  display: block;
+  overflow: auto;
+  border-collapse: collapse;
+}
+.prose td,
+.prose th {
+  padding: 0.5em;
+  border: 1px solid var(--border);
+}
+.prose blockquote {
+  border-left: 3px solid var(--ring);
+  padding-left: 1em;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
