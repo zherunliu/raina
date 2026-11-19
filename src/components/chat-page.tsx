@@ -50,14 +50,12 @@ export function ChatPage() {
     enabled: !!sessionId && !sending,
     queryFn: async () => {
       const data = await api.getChatHistoryApi(sessionId!);
-      return (data.history || []).map(
-        (message, i): ChatMessage => ({
-          id: `${sessionId}-${i}`,
-          role: message.role,
-          content: message.content,
-          timestamp: 0,
-        }),
-      );
+      return (data.history || []).map((message, i): ChatMessage => ({
+        id: `${sessionId}-${i}`,
+        role: message.role,
+        content: message.content,
+        timestamp: 0,
+      }));
     },
   });
   const messages =

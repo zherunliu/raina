@@ -8,10 +8,10 @@
     "build": "vite build && tsc --noEmit",
     "start": "node --env-file-if-exists=.env .output/server/index.mjs",
     "preview": "vite preview",
-    "lint": "eslint .",
+    "lint": "eslint . --fix --quiet",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "format": "prettier -w .",
+    "format": "prettier -w . --experimental-cli",
     "test:e2e": "playwright test",
     "db:setup": "tsx scripts/setup-db.ts"
   },

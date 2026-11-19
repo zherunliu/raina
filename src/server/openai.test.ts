@@ -44,35 +44,33 @@ function sse(events: unknown[], done = true) {
 }
 describe("OpenAI SDK adapter", () => {
   it("streams split UTF-8 SSE, forwards profile settings, and emits only answer text", async () => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValue(
-        sse([
-          {
-            choices: [
-              {
-                index: 0,
-                delta: { reasoning_content: "private reasoning" },
-                finish_reason: null,
-              },
-            ],
-          },
-          {
-            choices: [
-              {
-                index: 0,
-                delta: { content: "你好\nworld" },
-                finish_reason: null,
-              },
-            ],
-          },
-          {
-            choices: [
-              { index: 0, delta: { content: "!" }, finish_reason: "stop" },
-            ],
-          },
-        ]),
-      );
+    const fetch = vi.fn().mockResolvedValue(
+      sse([
+        {
+          choices: [
+            {
+              index: 0,
+              delta: { reasoning_content: "private reasoning" },
+              finish_reason: null,
+            },
+          ],
+        },
+        {
+          choices: [
+            {
+              index: 0,
+              delta: { content: "你好\nworld" },
+              finish_reason: null,
+            },
+          ],
+        },
+        {
+          choices: [
+            { index: 0, delta: { content: "!" }, finish_reason: "stop" },
+          ],
+        },
+      ]),
+    );
     vi.stubGlobal("fetch", fetch);
     expect(
       await collect(
@@ -94,24 +92,22 @@ describe("OpenAI SDK adapter", () => {
     });
   });
   it("rejects truncated streams and token-limit cutoffs", async () => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValue(
-        sse(
-          [
-            {
-              choices: [
-                {
-                  index: 0,
-                  delta: { content: "partial" },
-                  finish_reason: null,
-                },
-              ],
-            },
-          ],
-          false,
-        ),
-      );
+    const fetch = vi.fn().mockResolvedValue(
+      sse(
+        [
+          {
+            choices: [
+              {
+                index: 0,
+                delta: { content: "partial" },
+                finish_reason: null,
+              },
+            ],
+          },
+        ],
+        false,
+      ),
+    );
     vi.stubGlobal("fetch", fetch);
     await expect(collect(generate([], true, signal()))).rejects.toThrow(
       "Model service unavailable",
@@ -126,13 +122,11 @@ describe("OpenAI SDK adapter", () => {
     );
   });
   it("supports JSON completions and does not retry failed model calls", async () => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValue(
-        Response.json({
-          choices: [{ message: { content: "answer" }, finish_reason: "stop" }],
-        }),
-      );
+    const fetch = vi.fn().mockResolvedValue(
+      Response.json({
+        choices: [{ message: { content: "answer" }, finish_reason: "stop" }],
+      }),
+    );
     vi.stubGlobal("fetch", fetch);
     expect(await collect(generate([], false, signal()))).toBe("answer");
     fetch

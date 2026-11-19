@@ -8,319 +8,319 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated/explore'
-import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
-import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
-import { Route as ApiAuthRegisterRouteImport } from './routes/api/auth/register'
-import { Route as ApiDocumentsIndexRouteImport } from './routes/api/documents/index'
-import { Route as ApiDocumentsFilenameRouteImport } from './routes/api/documents/$filename'
-import { Route as ApiSessionsIndexRouteImport } from './routes/api/sessions/index'
-import { Route as ApiSessionsSessionIdRouteImport } from './routes/api/sessions/$sessionId'
-import { Route as ApiTarotDailyRouteImport } from './routes/api/tarot/daily'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as AuthenticatedRouteImport } from "./routes/_authenticated";
+import { Route as LoginRouteImport } from "./routes/login";
+import { Route as RegisterRouteImport } from "./routes/register";
+import { Route as AuthenticatedIndexRouteImport } from "./routes/_authenticated/index";
+import { Route as AuthenticatedExploreRouteImport } from "./routes/_authenticated/explore";
+import { Route as ApiChatRouteImport } from "./routes/api/chat";
+import { Route as ApiAuthLoginRouteImport } from "./routes/api/auth/login";
+import { Route as ApiAuthLogoutRouteImport } from "./routes/api/auth/logout";
+import { Route as ApiAuthRegisterRouteImport } from "./routes/api/auth/register";
+import { Route as ApiDocumentsIndexRouteImport } from "./routes/api/documents/index";
+import { Route as ApiDocumentsFilenameRouteImport } from "./routes/api/documents/$filename";
+import { Route as ApiSessionsIndexRouteImport } from "./routes/api/sessions/index";
+import { Route as ApiSessionsSessionIdRouteImport } from "./routes/api/sessions/$sessionId";
+import { Route as ApiTarotDailyRouteImport } from "./routes/api/tarot/daily";
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+  id: "/_authenticated",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
+  id: "/register",
+  path: "/register",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
+} as any);
 const AuthenticatedExploreRoute = AuthenticatedExploreRouteImport.update({
-  id: '/explore',
-  path: '/explore',
+  id: "/explore",
+  path: "/explore",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
+} as any);
 const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
+  id: "/api/chat",
+  path: "/api/chat",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiAuthLoginRoute = ApiAuthLoginRouteImport.update({
-  id: '/api/auth/login',
-  path: '/api/auth/login',
+  id: "/api/auth/login",
+  path: "/api/auth/login",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
-  id: '/api/auth/logout',
-  path: '/api/auth/logout',
+  id: "/api/auth/logout",
+  path: "/api/auth/logout",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiAuthRegisterRoute = ApiAuthRegisterRouteImport.update({
-  id: '/api/auth/register',
-  path: '/api/auth/register',
+  id: "/api/auth/register",
+  path: "/api/auth/register",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiDocumentsIndexRoute = ApiDocumentsIndexRouteImport.update({
-  id: '/api/documents/',
-  path: '/api/documents/',
+  id: "/api/documents/",
+  path: "/api/documents/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiDocumentsFilenameRoute = ApiDocumentsFilenameRouteImport.update({
-  id: '/api/documents/$filename',
-  path: '/api/documents/$filename',
+  id: "/api/documents/$filename",
+  path: "/api/documents/$filename",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiSessionsIndexRoute = ApiSessionsIndexRouteImport.update({
-  id: '/api/sessions/',
-  path: '/api/sessions/',
+  id: "/api/sessions/",
+  path: "/api/sessions/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiSessionsSessionIdRoute = ApiSessionsSessionIdRouteImport.update({
-  id: '/api/sessions/$sessionId',
-  path: '/api/sessions/$sessionId',
+  id: "/api/sessions/$sessionId",
+  path: "/api/sessions/$sessionId",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiTarotDailyRoute = ApiTarotDailyRouteImport.update({
-  id: '/api/tarot/daily',
-  path: '/api/tarot/daily',
+  id: "/api/tarot/daily",
+  path: "/api/tarot/daily",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/explore': typeof AuthenticatedExploreRoute
-  '/api/chat': typeof ApiChatRoute
-  '/api/auth/login': typeof ApiAuthLoginRoute
-  '/api/auth/logout': typeof ApiAuthLogoutRoute
-  '/api/auth/register': typeof ApiAuthRegisterRoute
-  '/api/documents/$filename': typeof ApiDocumentsFilenameRoute
-  '/api/sessions/$sessionId': typeof ApiSessionsSessionIdRoute
-  '/api/tarot/daily': typeof ApiTarotDailyRoute
-  '/api/documents/': typeof ApiDocumentsIndexRoute
-  '/api/sessions/': typeof ApiSessionsIndexRoute
+  "/": typeof AuthenticatedIndexRoute;
+  "/login": typeof LoginRoute;
+  "/register": typeof RegisterRoute;
+  "/explore": typeof AuthenticatedExploreRoute;
+  "/api/chat": typeof ApiChatRoute;
+  "/api/auth/login": typeof ApiAuthLoginRoute;
+  "/api/auth/logout": typeof ApiAuthLogoutRoute;
+  "/api/auth/register": typeof ApiAuthRegisterRoute;
+  "/api/documents/$filename": typeof ApiDocumentsFilenameRoute;
+  "/api/sessions/$sessionId": typeof ApiSessionsSessionIdRoute;
+  "/api/tarot/daily": typeof ApiTarotDailyRoute;
+  "/api/documents/": typeof ApiDocumentsIndexRoute;
+  "/api/sessions/": typeof ApiSessionsIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/explore': typeof AuthenticatedExploreRoute
-  '/api/chat': typeof ApiChatRoute
-  '/': typeof AuthenticatedIndexRoute
-  '/api/auth/login': typeof ApiAuthLoginRoute
-  '/api/auth/logout': typeof ApiAuthLogoutRoute
-  '/api/auth/register': typeof ApiAuthRegisterRoute
-  '/api/documents/$filename': typeof ApiDocumentsFilenameRoute
-  '/api/sessions/$sessionId': typeof ApiSessionsSessionIdRoute
-  '/api/tarot/daily': typeof ApiTarotDailyRoute
-  '/api/documents': typeof ApiDocumentsIndexRoute
-  '/api/sessions': typeof ApiSessionsIndexRoute
+  "/login": typeof LoginRoute;
+  "/register": typeof RegisterRoute;
+  "/explore": typeof AuthenticatedExploreRoute;
+  "/api/chat": typeof ApiChatRoute;
+  "/": typeof AuthenticatedIndexRoute;
+  "/api/auth/login": typeof ApiAuthLoginRoute;
+  "/api/auth/logout": typeof ApiAuthLogoutRoute;
+  "/api/auth/register": typeof ApiAuthRegisterRoute;
+  "/api/documents/$filename": typeof ApiDocumentsFilenameRoute;
+  "/api/sessions/$sessionId": typeof ApiSessionsSessionIdRoute;
+  "/api/tarot/daily": typeof ApiTarotDailyRoute;
+  "/api/documents": typeof ApiDocumentsIndexRoute;
+  "/api/sessions": typeof ApiSessionsIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/_authenticated': typeof AuthenticatedRouteWithChildren
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/_authenticated/explore': typeof AuthenticatedExploreRoute
-  '/api/chat': typeof ApiChatRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/api/auth/login': typeof ApiAuthLoginRoute
-  '/api/auth/logout': typeof ApiAuthLogoutRoute
-  '/api/auth/register': typeof ApiAuthRegisterRoute
-  '/api/documents/$filename': typeof ApiDocumentsFilenameRoute
-  '/api/sessions/$sessionId': typeof ApiSessionsSessionIdRoute
-  '/api/tarot/daily': typeof ApiTarotDailyRoute
-  '/api/documents/': typeof ApiDocumentsIndexRoute
-  '/api/sessions/': typeof ApiSessionsIndexRoute
+  __root__: typeof rootRouteImport;
+  "/_authenticated": typeof AuthenticatedRouteWithChildren;
+  "/login": typeof LoginRoute;
+  "/register": typeof RegisterRoute;
+  "/_authenticated/explore": typeof AuthenticatedExploreRoute;
+  "/api/chat": typeof ApiChatRoute;
+  "/_authenticated/": typeof AuthenticatedIndexRoute;
+  "/api/auth/login": typeof ApiAuthLoginRoute;
+  "/api/auth/logout": typeof ApiAuthLogoutRoute;
+  "/api/auth/register": typeof ApiAuthRegisterRoute;
+  "/api/documents/$filename": typeof ApiDocumentsFilenameRoute;
+  "/api/sessions/$sessionId": typeof ApiSessionsSessionIdRoute;
+  "/api/tarot/daily": typeof ApiTarotDailyRoute;
+  "/api/documents/": typeof ApiDocumentsIndexRoute;
+  "/api/sessions/": typeof ApiSessionsIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/login'
-    | '/register'
-    | '/explore'
-    | '/api/chat'
-    | '/api/auth/login'
-    | '/api/auth/logout'
-    | '/api/auth/register'
-    | '/api/documents/$filename'
-    | '/api/sessions/$sessionId'
-    | '/api/tarot/daily'
-    | '/api/documents/'
-    | '/api/sessions/'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/login"
+    | "/register"
+    | "/explore"
+    | "/api/chat"
+    | "/api/auth/login"
+    | "/api/auth/logout"
+    | "/api/auth/register"
+    | "/api/documents/$filename"
+    | "/api/sessions/$sessionId"
+    | "/api/tarot/daily"
+    | "/api/documents/"
+    | "/api/sessions/";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/login'
-    | '/register'
-    | '/explore'
-    | '/api/chat'
-    | '/'
-    | '/api/auth/login'
-    | '/api/auth/logout'
-    | '/api/auth/register'
-    | '/api/documents/$filename'
-    | '/api/sessions/$sessionId'
-    | '/api/tarot/daily'
-    | '/api/documents'
-    | '/api/sessions'
+    | "/login"
+    | "/register"
+    | "/explore"
+    | "/api/chat"
+    | "/"
+    | "/api/auth/login"
+    | "/api/auth/logout"
+    | "/api/auth/register"
+    | "/api/documents/$filename"
+    | "/api/sessions/$sessionId"
+    | "/api/tarot/daily"
+    | "/api/documents"
+    | "/api/sessions";
   id:
-    | '__root__'
-    | '/_authenticated'
-    | '/login'
-    | '/register'
-    | '/_authenticated/explore'
-    | '/api/chat'
-    | '/_authenticated/'
-    | '/api/auth/login'
-    | '/api/auth/logout'
-    | '/api/auth/register'
-    | '/api/documents/$filename'
-    | '/api/sessions/$sessionId'
-    | '/api/tarot/daily'
-    | '/api/documents/'
-    | '/api/sessions/'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/_authenticated"
+    | "/login"
+    | "/register"
+    | "/_authenticated/explore"
+    | "/api/chat"
+    | "/_authenticated/"
+    | "/api/auth/login"
+    | "/api/auth/logout"
+    | "/api/auth/register"
+    | "/api/documents/$filename"
+    | "/api/sessions/$sessionId"
+    | "/api/tarot/daily"
+    | "/api/documents/"
+    | "/api/sessions/";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  RegisterRoute: typeof RegisterRoute
-  ApiChatRoute: typeof ApiChatRoute
-  ApiAuthLoginRoute: typeof ApiAuthLoginRoute
-  ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
-  ApiAuthRegisterRoute: typeof ApiAuthRegisterRoute
-  ApiDocumentsFilenameRoute: typeof ApiDocumentsFilenameRoute
-  ApiSessionsSessionIdRoute: typeof ApiSessionsSessionIdRoute
-  ApiTarotDailyRoute: typeof ApiTarotDailyRoute
-  ApiDocumentsIndexRoute: typeof ApiDocumentsIndexRoute
-  ApiSessionsIndexRoute: typeof ApiSessionsIndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
+  LoginRoute: typeof LoginRoute;
+  RegisterRoute: typeof RegisterRoute;
+  ApiChatRoute: typeof ApiChatRoute;
+  ApiAuthLoginRoute: typeof ApiAuthLoginRoute;
+  ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute;
+  ApiAuthRegisterRoute: typeof ApiAuthRegisterRoute;
+  ApiDocumentsFilenameRoute: typeof ApiDocumentsFilenameRoute;
+  ApiSessionsSessionIdRoute: typeof ApiSessionsSessionIdRoute;
+  ApiTarotDailyRoute: typeof ApiTarotDailyRoute;
+  ApiDocumentsIndexRoute: typeof ApiDocumentsIndexRoute;
+  ApiSessionsIndexRoute: typeof ApiSessionsIndexRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/explore': {
-      id: '/_authenticated/explore'
-      path: '/explore'
-      fullPath: '/explore'
-      preLoaderRoute: typeof AuthenticatedExploreRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/login': {
-      id: '/api/auth/login'
-      path: '/api/auth/login'
-      fullPath: '/api/auth/login'
-      preLoaderRoute: typeof ApiAuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/logout': {
-      id: '/api/auth/logout'
-      path: '/api/auth/logout'
-      fullPath: '/api/auth/logout'
-      preLoaderRoute: typeof ApiAuthLogoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/register': {
-      id: '/api/auth/register'
-      path: '/api/auth/register'
-      fullPath: '/api/auth/register'
-      preLoaderRoute: typeof ApiAuthRegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/documents/': {
-      id: '/api/documents/'
-      path: '/api/documents'
-      fullPath: '/api/documents/'
-      preLoaderRoute: typeof ApiDocumentsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/documents/$filename': {
-      id: '/api/documents/$filename'
-      path: '/api/documents/$filename'
-      fullPath: '/api/documents/$filename'
-      preLoaderRoute: typeof ApiDocumentsFilenameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/sessions/': {
-      id: '/api/sessions/'
-      path: '/api/sessions'
-      fullPath: '/api/sessions/'
-      preLoaderRoute: typeof ApiSessionsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/sessions/$sessionId': {
-      id: '/api/sessions/$sessionId'
-      path: '/api/sessions/$sessionId'
-      fullPath: '/api/sessions/$sessionId'
-      preLoaderRoute: typeof ApiSessionsSessionIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/tarot/daily': {
-      id: '/api/tarot/daily'
-      path: '/api/tarot/daily'
-      fullPath: '/api/tarot/daily'
-      preLoaderRoute: typeof ApiTarotDailyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    "/_authenticated": {
+      id: "/_authenticated";
+      path: "";
+      fullPath: "/";
+      preLoaderRoute: typeof AuthenticatedRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/login": {
+      id: "/login";
+      path: "/login";
+      fullPath: "/login";
+      preLoaderRoute: typeof LoginRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/register": {
+      id: "/register";
+      path: "/register";
+      fullPath: "/register";
+      preLoaderRoute: typeof RegisterRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_authenticated/": {
+      id: "/_authenticated/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/explore": {
+      id: "/_authenticated/explore";
+      path: "/explore";
+      fullPath: "/explore";
+      preLoaderRoute: typeof AuthenticatedExploreRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/api/chat": {
+      id: "/api/chat";
+      path: "/api/chat";
+      fullPath: "/api/chat";
+      preLoaderRoute: typeof ApiChatRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/auth/login": {
+      id: "/api/auth/login";
+      path: "/api/auth/login";
+      fullPath: "/api/auth/login";
+      preLoaderRoute: typeof ApiAuthLoginRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/auth/logout": {
+      id: "/api/auth/logout";
+      path: "/api/auth/logout";
+      fullPath: "/api/auth/logout";
+      preLoaderRoute: typeof ApiAuthLogoutRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/auth/register": {
+      id: "/api/auth/register";
+      path: "/api/auth/register";
+      fullPath: "/api/auth/register";
+      preLoaderRoute: typeof ApiAuthRegisterRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/documents/": {
+      id: "/api/documents/";
+      path: "/api/documents";
+      fullPath: "/api/documents/";
+      preLoaderRoute: typeof ApiDocumentsIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/documents/$filename": {
+      id: "/api/documents/$filename";
+      path: "/api/documents/$filename";
+      fullPath: "/api/documents/$filename";
+      preLoaderRoute: typeof ApiDocumentsFilenameRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/sessions/": {
+      id: "/api/sessions/";
+      path: "/api/sessions";
+      fullPath: "/api/sessions/";
+      preLoaderRoute: typeof ApiSessionsIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/sessions/$sessionId": {
+      id: "/api/sessions/$sessionId";
+      path: "/api/sessions/$sessionId";
+      fullPath: "/api/sessions/$sessionId";
+      preLoaderRoute: typeof ApiSessionsSessionIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/tarot/daily": {
+      id: "/api/tarot/daily";
+      path: "/api/tarot/daily";
+      fullPath: "/api/tarot/daily";
+      preLoaderRoute: typeof ApiTarotDailyRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedExploreRoute: typeof AuthenticatedExploreRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedExploreRoute: typeof AuthenticatedExploreRoute;
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedExploreRoute: AuthenticatedExploreRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-}
+};
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
-)
+);
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
@@ -335,16 +335,16 @@ const rootRouteChildren: RootRouteChildren = {
   ApiTarotDailyRoute: ApiTarotDailyRoute,
   ApiDocumentsIndexRoute: ApiDocumentsIndexRoute,
   ApiSessionsIndexRoute: ApiSessionsIndexRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { createStart } from "@tanstack/react-start";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }
