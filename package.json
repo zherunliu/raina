@@ -25,7 +25,7 @@
     "clsx": "^2.1.1",
     "ioredis": "^5.11.1",
     "jsonwebtoken": "^9.0.3",
-    "lucide-react": "^0.577.0",
+    "lucide-react": "^1.76.0",
     "mysql2": "^3.24.6",
     "openai": "^7.60.0",
     "react": "^19.3.1",
