@@ -1,9 +1,11 @@
+// @ts-check
+
 import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 import hooks from "eslint-plugin-react-hooks";
 import globals from "globals";
-import prettier from "eslint-config-prettier/flat";
-export default tseslint.config(
+export default defineConfig(
   {
     ignores: [
       "dist/**",
@@ -21,11 +23,11 @@ export default tseslint.config(
   },
   {
     files: ["src/**/*.{ts,tsx}"],
+    // @ts-expect-error BAN TS COMMENT
     plugins: { "react-hooks": hooks },
     rules: {
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "error",
     },
   },
-  prettier,
 );
