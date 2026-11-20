@@ -68,7 +68,8 @@
     "raina": "Raina",
     "added_cards": "已添加 {count} 张塔罗牌信息",
     "attached_cards_note": "\n附加信息：已抽取的卡牌 - {cards}",
-    "error_try_later": "抱歉，发生了错误，请稍后重试。"
+    "error_try_later": "抱歉，发生了错误，请稍后重试。",
+    "stream_interrupted": "回复中断，尚未确认完成。请重新加载会话查看已保存的消息。"
   },
   "sidebar": {
     "new_chat": "新建对话",

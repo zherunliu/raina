@@ -108,6 +108,7 @@ export async function* streamChat(
     yield event;
     if (event.kind === "done") return;
   }
+  throw new Error(tGlobal("chat.stream_interrupted"));
 }
 export function uploadFileApi(file: File) {
   const body = new FormData();

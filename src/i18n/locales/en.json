@@ -68,7 +68,8 @@
     "raina": "Raina",
     "added_cards": "Added {count} tarot card info",
     "attached_cards_note": "\nAdditional info: drawn cards - {cards}",
-    "error_try_later": "Sorry, something went wrong. Please try again later."
+    "error_try_later": "Sorry, something went wrong. Please try again later.",
+    "stream_interrupted": "The response was interrupted before completion was confirmed. Reload the conversation to check saved messages."
   },
   "sidebar": {
     "new_chat": "New chat",
