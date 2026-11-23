@@ -24,7 +24,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useI18n } from "@/i18n";
+import { useTranslation } from "react-i18next";
+import { getLocale, setLocale } from "@/i18n";
 import { logout } from "@/lib/session";
 import { TarotTools } from "./tarot-tools";
 import type { DrawnCard } from "@/types";
@@ -49,7 +50,8 @@ export function useApp() {
   return value;
 }
 export function AppShell() {
-  const { t, locale, setLocale } = useI18n();
+  const { t, i18n } = useTranslation();
+  const locale = getLocale(i18n.resolvedLanguage);
   const router = useRouter();
   const queryClient = useQueryClient();
   const [sending, setSending] = useState(false);
@@ -92,7 +94,7 @@ export function AppShell() {
     >
       <div className="flex h-svh min-w-80 flex-col">
         <a className="sr-only focus:not-sr-only focus:p-2" href="#main">
-          {locale === "zh" ? "跳至内容" : "Skip to content"}
+          {t("common.skip_to_content")}
         </a>
         <header className="bg-card flex min-h-16 flex-wrap items-center justify-between gap-2 border-b px-3 py-2 sm:px-6">
           <div className="flex items-center gap-2">
@@ -144,7 +146,7 @@ export function AppShell() {
             <Button
               size="icon"
               variant="ghost"
-              aria-label={locale === "zh" ? "切换主题" : "Toggle theme"}
+              aria-label={t("common.toggle_theme")}
               onClick={() => {
                 setDark(!dark);
                 localStorage.setItem("theme", !dark ? "dark" : "light");

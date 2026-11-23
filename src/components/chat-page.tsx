@@ -12,8 +12,9 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import * as api from "@/api";
-import { useI18n } from "@/i18n";
+import { getLocale } from "@/i18n";
 import { useApp } from "./app-shell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,7 +23,8 @@ import type { ChatMessage } from "@/types";
 
 const historyKey = (id: string | null) => ["history", id] as const;
 export function ChatPage() {
-  const { t, locale } = useI18n();
+  const { t, i18n } = useTranslation();
+  const locale = getLocale(i18n.resolvedLanguage);
   const {
     sending,
     setSending,
@@ -73,8 +75,7 @@ export function ChatPage() {
   });
   const upload = useMutation({
     mutationFn: api.uploadFileApi,
-    onSuccess: () =>
-      toast.success(locale === "zh" ? "文档已上传" : "Document uploaded"),
+    onSuccess: () => toast.success(t("chat.upload_success")),
     onError: (error) => toast.error(error.message),
   });
   async function send() {
@@ -270,7 +271,7 @@ export function ChatPage() {
                 if (sessionId) void history.refetch();
               }}
             >
-              {locale === "zh" ? "重试" : "Retry"}
+              {t("common.retry")}
             </Button>
           </div>
         )}
@@ -399,7 +400,7 @@ export function ChatPage() {
             <Button
               type="submit"
               size="icon-lg"
-              aria-label={locale === "zh" ? "发送" : "Send"}
+              aria-label={t("common.send")}
               disabled={sending || !input.trim() || history.isFetching}
             >
               <Send />

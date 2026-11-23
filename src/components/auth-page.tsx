@@ -2,13 +2,15 @@ import { useState, type FormEvent } from "react";
 import { Link, useRouter, useSearch } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { loginApi, registerApi } from "@/api";
-import { useI18n } from "@/i18n";
+import { getLocale, setLocale } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function AuthPage({ register = false }: { register?: boolean }) {
-  const { t, locale, setLocale } = useI18n();
+  const { t, i18n } = useTranslation();
+  const locale = getLocale(i18n.resolvedLanguage);
   const router = useRouter();
   const search = useSearch({ strict: false });
   const [error, setError] = useState("");
@@ -53,7 +55,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
             variant="ghost"
             onClick={() => setLocale(locale === "zh" ? "en" : "zh")}
           >
-            {locale === "zh" ? "English" : "中文"}
+            {t(locale === "zh" ? "language.en" : "language.zh")}
           </Button>
         </div>
         <div>

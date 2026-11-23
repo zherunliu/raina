@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type { ChatMessage } from "@/types";
-import { useI18n } from "@/i18n";
+import { useTranslation } from "react-i18next";
+import { getLocale } from "@/i18n";
 import { Markdown } from "./markdown";
 export function MessageList({
   messages,
@@ -10,7 +11,8 @@ export function MessageList({
   messages: ChatMessage[];
   sending: boolean;
 }) {
-  const { t, locale } = useI18n();
+  const { t, i18n } = useTranslation();
+  const locale = getLocale(i18n.resolvedLanguage);
   const parent = useRef<HTMLDivElement>(null);
   const follow = useRef(true);
   const virtualizer = useVirtualizer({

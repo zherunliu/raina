@@ -8,7 +8,11 @@
     "close": "Close",
     "delete": "Delete",
     "clear": "Clear",
-    "unauthorized": "Your session expired. Please sign in again."
+    "unauthorized": "Your session expired. Please sign in again.",
+    "retry": "Retry",
+    "send": "Send",
+    "skip_to_content": "Skip to content",
+    "toggle_theme": "Toggle theme"
   },
   "auth": {
     "login": "Sign in",
@@ -66,8 +70,9 @@
     "thinking": "Thinking...",
     "you": "You",
     "raina": "Raina",
-    "added_cards": "Added {count} tarot card info",
-    "attached_cards_note": "\nAdditional info: drawn cards - {cards}",
+    "added_cards": "Added {{count}} tarot card info",
+    "attached_cards_note": "\nAdditional info: drawn cards - {{cards}}",
+    "upload_success": "Document uploaded",
     "error_try_later": "Sorry, something went wrong. Please try again later.",
     "stream_interrupted": "The response was interrupted before completion was confirmed. Reload the conversation to check saved messages."
   },
@@ -78,7 +83,7 @@
     "empty": "No chats yet",
     "today": "Today",
     "yesterday": "Yesterday",
-    "days_ago": "{days} days ago"
+    "days_ago": "{{days}} days ago"
   },
   "explore": {
     "title": "Tarot Encyclopedia",
