@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { tGlobal } from "@/i18n";
+import { getLocale, tGlobal } from "@/i18n";
 import { sseData } from "./sse";
 const responseSchema = z.object({
   code: z.number(),
@@ -31,7 +31,7 @@ export type StreamEvent =
   | { kind: "done" };
 async function request(path: string, init: RequestInit = {}) {
   const headers = new Headers(init.headers);
-  headers.set("accept-language", localStorage.getItem("lang") || "zh");
+  headers.set("accept-language", getLocale());
   if (init.body && !(init.body instanceof FormData))
     headers.set("content-type", "application/json");
   const response = await fetch(`/api${path}`, { ...init, headers });

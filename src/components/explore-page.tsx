@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { cards, cardImage } from "@/lib/tarot";
 import type { TarotCard } from "@/types";
-import { useI18n } from "@/i18n";
+import { useTranslation } from "react-i18next";
+import { getLocale } from "@/i18n";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +12,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 export function ExplorePage() {
-  const { t, locale } = useI18n();
+  const { t, i18n } = useTranslation();
+  const locale = getLocale(i18n.resolvedLanguage);
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<TarotCard | null>(null);

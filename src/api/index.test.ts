@@ -1,7 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { streamChat, type StreamEvent } from "./index";
 
-vi.mock("@/i18n", () => ({ tGlobal: (key: string) => key }));
+vi.mock("@/i18n", () => ({
+  tGlobal: (key: string) => key,
+  getLocale: () => "en",
+}));
 
 beforeEach(() => {
   vi.stubGlobal("localStorage", { getItem: () => "en" });

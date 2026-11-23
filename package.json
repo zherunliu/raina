@@ -13,7 +13,10 @@
     "test": "vitest run",
     "format": "prettier -w . --experimental-cli",
     "test:e2e": "playwright test",
-    "db:setup": "tsx scripts/setup-db.ts"
+    "db:setup": "tsx scripts/setup-db.ts",
+    "git:config": "git config user.name hangtiancheng && git config user.email '161043261@qq.com'",
+    "git:commit": "git add -A && git commit -m \"feat: Introduce new features\"",
+    "git:push": "pnpm git:commit && git push origin main"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -23,6 +26,7 @@
     "@tanstack/react-virtual": "^3.14.26",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "i18next": "^27.2.4",
     "ioredis": "^5.11.1",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.76.0",
@@ -30,6 +34,7 @@
     "openai": "^7.60.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "react-i18next": "^18.0.3",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
     "sonner": "^2.0.8",

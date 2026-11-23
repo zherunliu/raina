@@ -7,7 +7,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useI18n } from "@/i18n";
+import { useTranslation } from "react-i18next";
+import { getLocale } from "@/i18n";
 import { drawCards, cardImage } from "@/lib/tarot";
 import { tarotDailyApi } from "@/api";
 import type { DrawnCard } from "@/types";
@@ -21,7 +22,8 @@ export function TarotTools({
   close: () => void;
   confirm: (cards: DrawnCard[]) => void;
 }) {
-  const { t, locale } = useI18n();
+  const { t, i18n } = useTranslation();
+  const locale = getLocale(i18n.resolvedLanguage);
   const [count, setCount] = useState(3);
   const [drawn, setDrawn] = useState<DrawnCard[]>(() =>
     mode === "daily" ? drawCards(1) : [],
@@ -149,7 +151,7 @@ export function TarotTools({
                   variant="outline"
                   onClick={() => interpretation.mutate(drawn[0])}
                 >
-                  {locale === "zh" ? "重试" : "Retry"}
+                  {t("common.retry")}
                 </Button>
               </div>
             )}
